@@ -2,7 +2,7 @@
    straight facets, rounded outer corners, light three-quarter angle. Drawn in a 160 x 100 box.
    Usage: ZQ.art('die') inside an element that carries data-track (sets --t, --t-deep, --t-lip, --t-soft). */
 (function () {
-  const L = 'color-mix(in srgb, var(--t) 42%, var(--bg-surface))'; // light face
+  const L = 'color-mix(in srgb, var(--t) 45%, #FFFFFF)'; // light face: mixed towards white in both themes so art stays bright on dark
   const M = 'var(--t)';                                            // mid face
   const D = 'var(--t-lip)';                                        // dark face
   const INK = 'var(--ink)';

@@ -65,11 +65,12 @@
   /* Renders every [data-tex] element (add data-display for block maths) and $...$ spans inside .md text */
   const mathify = (root = document) => { $$('[data-tex]', root).forEach(el => { el.innerHTML = tex(el.dataset.tex, el.hasAttribute('data-display')); el.removeAttribute('data-tex'); }); };
   /* Inline-maths templating: 'Total is $x+y$' -> HTML with KaTeX */
-  const md = (s) => String(s).replace(/\$\$([^$]+)\$\$/g, (_, m) => tex(m, true)).replace(/\$([^$]+)\$/g, (_, m) => tex(m, false));
+  const md = (s) => String(s).replace(/\$\$([^$]+)\$\$/g, (_, m) => tex(m, true))
+    .replace(/\$([^$]+)\$([.,:;?]?)/g, (_, m, p) => '<span style="white-space:nowrap">' + tex(m, false) + p + '</span>'); // punctuation stays with its formula
 
   /* ---------- Settings: theme, motion, sound ---------- */
   const settings = {
-    theme: store.get('theme', 'system'), motion: store.get('motion', 'system'), sound: store.get('sound', false),
+    theme: store.get('theme', 'system'), motion: store.get('motion', 'system'), sound: store.get('sound', false), haptics: store.get('haptics', true),
   };
   const applySettings = () => {
     const r = document.documentElement;
@@ -96,15 +97,16 @@
     if (name === 'streak') { [587.3, 784, 987.8].forEach((f, i) => tone(f, i * 0.08, 0.25, 'sine', 0.09)); }
     if (name === 'tap') { tone(1200, 0, 0.03, 'sine', 0.04); }
   };
-  const haptic = (ms = 10) => { try { if (navigator.vibrate) navigator.vibrate(ms); } catch { /* not supported */ } };
+  const haptic = (ms = 10) => { if (!settings.haptics) return; try { if (navigator.vibrate) navigator.vibrate(ms); } catch { /* not supported */ } };
 
   /* ---------- Motion helpers ---------- */
   const countUp = (el, to, ms = 700, from = 0, fmt = (v) => Math.round(v).toLocaleString('en-GB')) => {
     if (reducedMotion()) { el.textContent = fmt(to); return Promise.resolve(); }
     return new Promise(res => {
-      const t0 = performance.now();
+      let t0 = null;
       const step = (now) => {
-        const p = Math.min(1, (now - t0) / ms);
+        if (t0 === null) t0 = now; // first frame time, so a late first frame never starts mid-count
+        const p = Math.max(0, Math.min(1, (now - t0) / ms));
         const e = p < 0.8 ? p / 0.8 * 0.9 : 0.9 + (1 - Math.pow(1 - (p - 0.8) / 0.2, 3)) * 0.1; // linear then ease-out on the last 20%
         el.textContent = fmt(from + (to - from) * e);
         if (p < 1) requestAnimationFrame(step); else res();
@@ -161,12 +163,13 @@
         <div class="right">
           <button class="streak-pill" data-streak aria-label="Streak ${L.streak} days">${L.streak}${bolt(L.todayDone)}<span class="rest-slots">${[0, 1].map(i => `<i class="${i < L.restDays ? 'on' : ''}"></i>`).join('')}</span></button>
           <span class="mp-chip" title="Mastery points">${icon('target', 'sm')} ${L.mp}</span>
-          <a class="avatar" href="#you" aria-label="You">${L.initial}</a>
+          <a class="avatar" href="#you" aria-label="You" ${tab === 'you' ? 'aria-current="page"' : ''}>${L.initial}</a>
         </div></div></header>
       <main class="shell-main" id="main"></main>
       <nav class="tabbar" aria-label="Main">${TABS.map(([id, n, ic]) => `<a href="#${id}" ${tab === id ? 'aria-current="page"' : ''}>${icon(ic)}<span>${n}</span></a>`).join('')}</nav>
     </div>`);
     wrap.querySelector('[data-streak]').addEventListener('click', () => streakSheet());
+    if ((store.get('you.prefs', {}) || {}).streakMode === 'off') wrap.querySelector('[data-streak]').hidden = true; // streak switched off on You
     return wrap;
   };
 
@@ -183,7 +186,7 @@
   const streakSheet = () => {
     const L = window.ZQData.learner;
     sheet(`<div style="display:grid;gap:20px">
-      <div style="display:flex;align-items:center;gap:12px"><span class="t-stat">${L.streak}</span>${bolt(L.todayDone, 'xl')}<span class="t-h2" style="margin-left:auto">day streak</span></div>
+      <div style="display:flex;align-items:center;gap:12px;padding-right:48px"><span class="t-stat">${L.streak}</span>${bolt(L.todayDone, 'xl')}<span class="t-h2">day streak</span></div>
       <p class="t-body secondary" style="margin:0">${L.todayDone ? 'Today counts. Come back tomorrow to make it ' + (L.streak + 1) + '.' : 'Finish one lesson or three problems today to keep it going.'}</p>
       ${weekStrip()}
       <div class="card pad" style="display:flex;gap:12px;align-items:center"><span class="rest-slots" style="transform:scale(1.4);transform-origin:left">${[0, 1].map(i => `<i class="${i < L.restDays ? 'on' : ''}"></i>`).join('')}</span>

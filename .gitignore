@@ -1,3 +1,4 @@
 # Pyodide runtime (13 MB) is fetched by mockups/scripts/vendor.sh, not committed
 mockups/vendor/pyodide/
 node_modules/
+mockups/.preview.html

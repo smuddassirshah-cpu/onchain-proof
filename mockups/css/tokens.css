@@ -70,6 +70,12 @@
   --secondary-label: #000000;
   --disabled-face: #F2F2F2;
   --disabled-label: #C2C2C2;
+  --opt-dim-line: #F2F2F2;
+
+  /* Fixed ink and white for labels on fixed fills */
+  --ink-fixed: #000000; --on-fill: #000000; --on-semantic: #000000; --on-amber: #000000;
+  --on-accent: #FFFFFF; --glow: #FFFFFF; --on-strong: #FFFFFF;
+  --node-review: #EDA100;
 
   /* Learner-controlled, hints, focus */
   --manip: #2F6BFF;
@@ -151,7 +157,7 @@
     --amber-wash-1: rgba(248, 204, 69, 0.03); --amber-wash-2: rgba(248, 204, 69, 0.14); --fail-cross: #F26B66;
     --neutral-face: #F2F2F2; --neutral-lip: #B3B3B3; --neutral-label: #000000;
     --secondary-face: #2B2B2B; --secondary-lip: #0F0F0F; --secondary-label: #FFFFFF;
-    --disabled-face: #1F1F1F; --disabled-label: #5A5A5A;
+    --disabled-face: #262626; --disabled-label: #5A5A5A; --opt-dim-line: #2B2B2B; --on-strong: #000000;
     --manip: #4D8BFF; --manip-wash: rgba(77, 139, 255, 0.16); --hint: #8F93F2; --hint-wash: rgba(143, 147, 242, 0.14); --focus: #4D8BFF; --code-keyword: #8FA6FF;
     --league-me: #004E16;
     --maths: #5598E7; --maths-deep: #5598E7; --maths-lip: #2A5E9E; --maths-soft: rgba(85, 152, 231, 0.16);
@@ -184,7 +190,7 @@
   --amber-wash-1: rgba(248, 204, 69, 0.03); --amber-wash-2: rgba(248, 204, 69, 0.14); --fail-cross: #F26B66;
   --neutral-face: #F2F2F2; --neutral-lip: #B3B3B3; --neutral-label: #000000;
   --secondary-face: #2B2B2B; --secondary-lip: #0F0F0F; --secondary-label: #FFFFFF;
-  --disabled-face: #1F1F1F; --disabled-label: #5A5A5A;
+  --disabled-face: #262626; --disabled-label: #5A5A5A; --opt-dim-line: #2B2B2B; --on-strong: #000000;
   --manip: #4D8BFF; --manip-wash: rgba(77, 139, 255, 0.16); --hint: #8F93F2; --hint-wash: rgba(143, 147, 242, 0.14); --focus: #4D8BFF; --code-keyword: #8FA6FF;
   --league-me: #004E16;
   --maths: #5598E7; --maths-deep: #5598E7; --maths-lip: #2A5E9E; --maths-soft: rgba(85, 152, 231, 0.16);

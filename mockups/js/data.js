@@ -55,7 +55,7 @@
       { n: 1, name: 'Updating on evidence', items: [
         { kind: 'lesson', id: 'l1', name: 'What changes when you learn something', status: 'done', mastered: true, screens: 10 },
         { kind: 'lesson', id: 'l2', name: 'Counting what is left', status: 'done', mastered: true, screens: 11 },
-        { kind: 'lesson', id: 'l3', name: 'Shrinking the sample space', status: 'current', screens: 10 },
+        { kind: 'lesson', id: 'l3', name: 'Shrinking the sample space', status: 'current', screens: 9 },
         { kind: 'lesson', id: 'l4', name: 'The multiplication rule', status: 'upcoming', screens: 12 },
         { kind: 'lesson', id: 'l5', name: 'Trees for sequences', status: 'upcoming', screens: 11 },
         { kind: 'review', id: 'r1', name: 'Level review', status: 'upcoming' },
@@ -87,7 +87,7 @@
 
   /* Example learner. All numbers are illustrative. */
   const learner = {
-    first: 'Muddassir', initial: 'M', stage: 1, track: 'Researcher', weeklyGoalH: 15,
+    first: 'Muddassir', last: 'Shah', initial: 'M', stage: 1, track: 'Researcher', weeklyGoalH: 15,
     hoursThisWeek: { main: 6.5, build: 2, review: 1, mental: 0.5 },
     streak: 11, restDays: 1, todayDone: false, bestStreak: 23,
     week: ['lit', 'lit', 'rest', 'lit', 'lit', 'today', 'future'], // Monday to Sunday
@@ -98,7 +98,7 @@
       terminal: 1, 'first-python': 1, mental: 0.7, 'py-found': 1, 'numpy-pandas': 0.85, plotting: 0.4, git: 1, sql: 0.6, pytest: 0.3,
       limits: 1, integrals: 0.55, vectors: 0.7, 'counting-chance': 1, conditional: 0.08 },
     passed: ['0.1', '0.2', '0.3', '0.4', '1.2'],
-    due: { redo: 4, redoMinutes: 9, homework: { name: 'Homework 4 · Integrals', due: 'Thu 9 Oct' }, weeklyProbs: 2 },
+    due: { redo: 4, redoMinutes: 9, homework: { name: 'Homework 4 · Integrals', due: 'Thu 8 Oct' }, weeklyProbs: 2 },
     mental: { last: 31, trend: [18, 21, 22, 24, 23, 26, 27, 29, 28, 31] },
     nextExam: { topic: '1.4', name: 'Linear algebra topic exam', readiness: 0.62 },
   };

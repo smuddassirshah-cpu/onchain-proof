@@ -1,0 +1,212 @@
+/* Zero to Quant design tokens.
+   Source of truth: docs/design-research.md (sections 2.1 to 2.11).
+   Layout concept: white, quiet workbench; one idea per screen; colour reserved for verdicts, streaks and track identity. */
+
+:root {
+  color-scheme: light;
+
+  /* Surfaces and neutrals (pure greys, as measured) */
+  --bg-canvas: #FFFFFF;
+  --bg-surface: #FFFFFF;
+  --bg-raised: #FFFFFF;
+  --bg-sunken: #F2F2F2;
+  --bg-hover: #F7F7F7;
+  --bg-scrim: rgba(0, 0, 0, 0.5);
+  --line: #E5E5E5;
+  --line-strong: #CCCCCC;
+  --line-control: #8A8A8A;
+  --lip-neutral: #CCCCCC;
+  --ink: #000000;
+  --text-2: #4D4D4D;
+  --text-muted: #6B6B6B;
+  --text-disabled: #C2C2C2;
+  --icon: #797979;
+  --icon-quiet: #8A8A8A;
+  --link-disabled: #999999;
+  --hairline: rgba(0, 0, 0, 0.06);
+
+  /* Brand pear (streak only) */
+  --pear-50: #FAFCE6;
+  --pear-100: #F3F8C4;
+  --pear-200: #E9F28F;
+  --pear-300: #D8E82E;
+  --pear-400: #C9DA17;
+  --pear-500: #BBCC00;
+  --pear-600: #96A300;
+  --pear-700: #6B7500;
+  --bolt-lit: var(--pear-500);
+  --bolt-day: var(--pear-400);
+  --bolt-unlit: #C8C8C8;
+
+  /* Correct family */
+  --green-brand: #29CC57;
+  --green-strong: #15B441;
+  --green-face: #49D470;
+  --green-lip: #38BF5D;
+  --green-frame: #5ED981;
+  --green-chip: #9FE8B3;
+  --green-fill: #F4FCF7;
+  --green-text: #13803B;
+  --green-wash-1: #EAFAEE;
+  --green-wash-2: #D1F5DB;
+
+  /* Not-yet family */
+  --amber-frame: #F9D25C;
+  --amber-face: #F8CC45;
+  --amber-lip: #C29B26;
+  --amber-chip: #FCE49D;
+  --amber-fill: #FFFBEE;
+  --amber-text: #9A5800;
+  --amber-wash-1: #FEF9EA;
+  --amber-wash-2: #FEF3D1;
+  --fail-cross: #C9302C;
+
+  /* Actions */
+  --neutral-face: #565656;
+  --neutral-lip: #262626;
+  --neutral-label: #FFFFFF;
+  --secondary-face: #E5E5E5;
+  --secondary-lip: #CCCCCC;
+  --secondary-label: #000000;
+  --disabled-face: #F2F2F2;
+  --disabled-label: #C2C2C2;
+
+  /* Learner-controlled, hints, focus */
+  --manip: #2F6BFF;
+  --manip-wash: #EAF0FF;
+  --hint: #5A5FE0;
+  --hint-wash: #EEEFFD;
+  --focus: #2F6BFF;
+  --code-keyword: #456DFF;
+
+  /* League */
+  --league-me: #D4F5E0;
+  --medal-gold: #F8CF50;
+  --medal-gold-rim: #F7C325;
+  --medal-silver: #C2C2C2;
+  --medal-bronze: #F7B67C;
+
+  /* Track accents: accent / deep (face, text) / lip / soft */
+  --maths: #2A78D6;      --maths-deep: #1C5CAB;   --maths-lip: #144686;  --maths-soft: #E8F1FC;
+  --prob: #D95926;       --prob-deep: #A8441A;    --prob-lip: #7F3212;   --prob-soft: #FDEEE7;
+  --code: #4A3AA7;       --code-deep: #4A3AA7;    --code-lip: #33277A;   --code-soft: #EEECF9;
+  --fin: #12875E;        --fin-deep: #0B6B4A;     --fin-lip: #064D35;    --fin-soft: #E3F5EE;
+  --ml: #C43C78;         --ml-deep: #C43C78;      --ml-lip: #962B5A;     --ml-soft: #FBE8F0;
+  --speed: #A36D00;      --speed-deep: #8A5C00;   --speed-lip: #634200;  --speed-soft: #FBF1DC;
+  --track-label: #FFFFFF;
+
+  /* Upcoming course-map node */
+  --node-face: #E5E5E5;
+  --node-side: #ADADAD;
+
+  /* Diagram palette (validated, slots in fixed order) */
+  --s1: #2A78D6; --s2: #EB6834; --s3: #1BAF7A; --s4: #EDA100; --s5: #E87BA4; --s6: #4A3AA7;
+  --seq-1: #CDE2FB; --seq-2: #9CC3F3; --seq-3: #5F9CE6; --seq-4: #2A78D6; --seq-5: #1C5CAB; --seq-6: #0D366B;
+  --div-neg: #E34948; --div-mid: #F0EFEC; --div-pos: #2A78D6;
+  --grid: var(--line);
+  --axis: var(--text-muted);
+
+  /* Type */
+  --font-sans: "Archivo", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-serif: "Besley", Georgia, "Times New Roman", serif;
+  --font-mono: "Source Code Pro", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* Radii */
+  --r-xs: 6px; --r-sm: 10px; --r-md: 16px; --r-lg: 20px; --r-xl: 24px; --r-pill: 999px;
+
+  /* Elevation */
+  --e1: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --e2: 0 2px 4px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.08);
+  --e3: 0 -8px 32px rgba(0, 0, 0, 0.16);
+
+  /* Motion */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-enter: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --ease-exit: cubic-bezier(0.3, 0, 0.8, 0.15);
+  --ease-morph: cubic-bezier(0.65, 0, 0.35, 1);
+  --spring-snap: linear(0, 0.069, 0.214, 0.379, 0.533, 0.662, 0.764, 0.841, 0.897, 0.936, 0.962, 0.979, 0.990, 0.996, 0.999, 1);
+  --spring-bounce: linear(0, 0.121, 0.366, 0.618, 0.818, 0.952, 1.026, 1.055, 1.057, 1.046, 1.031, 1.017, 1.007, 1.001, 0.998, 0.997, 1);
+  --spring-physical: linear(0, 0.131, 0.407, 0.698, 0.927, 1.068, 1.129, 1.131, 1.101, 1.061, 1.025, 0.999, 0.986, 0.982, 0.984, 0.989, 1);
+  --d-press: 80ms; --d-hover: 120ms; --d-micro: 150ms; --d-base: 200ms; --d-enter: 200ms; --d-exit: 120ms;
+  --d-sheet: 280ms; --d-progress: 320ms; --d-explain: 600ms; --d-count: 700ms;
+
+  /* Layout */
+  --col: 540px;
+  --shell-max: 1120px;
+  --topbar-h: 64px;
+  --tap: 44px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg-canvas: #141414; --bg-surface: #1E1E1E; --bg-raised: #262626; --bg-sunken: #101010; --bg-hover: #2B2B2B;
+    --line: #4B4B4B; --line-strong: #5A5A5A; --line-control: #6E6E6E; --lip-neutral: #0F0F0F;
+    --ink: #FFFFFF; --text-2: #A1A1A1; --text-muted: #8C8C8C; --text-disabled: #5A5A5A;
+    --icon: #A5A5A5; --icon-quiet: #6E6E6E; --link-disabled: #5A5A5A; --hairline: rgba(255, 255, 255, 0.08);
+    --bolt-lit: var(--pear-300); --bolt-day: var(--pear-300); --bolt-unlit: #5A5A5A;
+    --green-strong: #2ECC57; --green-chip: rgba(94, 217, 129, 0.2); --green-fill: rgba(73, 212, 112, 0.14); --green-text: #5ED981;
+    --green-wash-1: rgba(73, 212, 112, 0.04); --green-wash-2: rgba(73, 212, 112, 0.16);
+    --amber-chip: rgba(249, 210, 92, 0.2); --amber-fill: rgba(248, 204, 69, 0.12); --amber-text: #F9D25C;
+    --amber-wash-1: rgba(248, 204, 69, 0.03); --amber-wash-2: rgba(248, 204, 69, 0.14); --fail-cross: #F26B66;
+    --neutral-face: #F2F2F2; --neutral-lip: #B3B3B3; --neutral-label: #000000;
+    --secondary-face: #2B2B2B; --secondary-lip: #0F0F0F; --secondary-label: #FFFFFF;
+    --disabled-face: #1F1F1F; --disabled-label: #5A5A5A;
+    --manip: #4D8BFF; --manip-wash: rgba(77, 139, 255, 0.16); --hint: #8F93F2; --hint-wash: rgba(143, 147, 242, 0.14); --focus: #4D8BFF; --code-keyword: #8FA6FF;
+    --league-me: #004E16;
+    --maths: #5598E7; --maths-deep: #5598E7; --maths-lip: #2A5E9E; --maths-soft: rgba(85, 152, 231, 0.16);
+    --prob: #EB6834; --prob-deep: #EB6834; --prob-lip: #9E3F18; --prob-soft: rgba(235, 104, 52, 0.16);
+    --code: #9085E9; --code-deep: #9085E9; --code-lip: #5A4FB0; --code-soft: rgba(144, 133, 233, 0.16);
+    --fin: #1BAF7A; --fin-deep: #1BAF7A; --fin-lip: #0E6E4C; --fin-soft: rgba(27, 175, 122, 0.16);
+    --ml: #E87BA4; --ml-deep: #E87BA4; --ml-lip: #A84C70; --ml-soft: rgba(232, 123, 164, 0.16);
+    --speed: #EDA100; --speed-deep: #EDA100; --speed-lip: #9A6900; --speed-soft: rgba(237, 161, 0, 0.16);
+    --track-label: #000000;
+    --node-face: #2B2B2B; --node-side: #1F1F1F;
+    --s1: #3987E5; --s2: #D95926; --s3: #199E70; --s4: #C98500; --s5: #D55181; --s6: #9085E9;
+    --seq-1: #0D366B; --seq-2: #144686; --seq-3: #1C5CAB; --seq-4: #2A78D6; --seq-5: #5F9CE6; --seq-6: #9CC3F3;
+    --div-mid: #383835;
+    --e1: 0 0 0 1px rgba(255, 255, 255, 0.08);
+    --e2: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 8px 24px rgba(0, 0, 0, 0.5);
+    --e3: 0 -8px 32px rgba(0, 0, 0, 0.6);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg-canvas: #141414; --bg-surface: #1E1E1E; --bg-raised: #262626; --bg-sunken: #101010; --bg-hover: #2B2B2B;
+  --line: #4B4B4B; --line-strong: #5A5A5A; --line-control: #6E6E6E; --lip-neutral: #0F0F0F;
+  --ink: #FFFFFF; --text-2: #A1A1A1; --text-muted: #8C8C8C; --text-disabled: #5A5A5A;
+  --icon: #A5A5A5; --icon-quiet: #6E6E6E; --link-disabled: #5A5A5A; --hairline: rgba(255, 255, 255, 0.08);
+  --bolt-lit: var(--pear-300); --bolt-day: var(--pear-300); --bolt-unlit: #5A5A5A;
+  --green-strong: #2ECC57; --green-chip: rgba(94, 217, 129, 0.2); --green-fill: rgba(73, 212, 112, 0.14); --green-text: #5ED981;
+  --green-wash-1: rgba(73, 212, 112, 0.04); --green-wash-2: rgba(73, 212, 112, 0.16);
+  --amber-chip: rgba(249, 210, 92, 0.2); --amber-fill: rgba(248, 204, 69, 0.12); --amber-text: #F9D25C;
+  --amber-wash-1: rgba(248, 204, 69, 0.03); --amber-wash-2: rgba(248, 204, 69, 0.14); --fail-cross: #F26B66;
+  --neutral-face: #F2F2F2; --neutral-lip: #B3B3B3; --neutral-label: #000000;
+  --secondary-face: #2B2B2B; --secondary-lip: #0F0F0F; --secondary-label: #FFFFFF;
+  --disabled-face: #1F1F1F; --disabled-label: #5A5A5A;
+  --manip: #4D8BFF; --manip-wash: rgba(77, 139, 255, 0.16); --hint: #8F93F2; --hint-wash: rgba(143, 147, 242, 0.14); --focus: #4D8BFF; --code-keyword: #8FA6FF;
+  --league-me: #004E16;
+  --maths: #5598E7; --maths-deep: #5598E7; --maths-lip: #2A5E9E; --maths-soft: rgba(85, 152, 231, 0.16);
+  --prob: #EB6834; --prob-deep: #EB6834; --prob-lip: #9E3F18; --prob-soft: rgba(235, 104, 52, 0.16);
+  --code: #9085E9; --code-deep: #9085E9; --code-lip: #5A4FB0; --code-soft: rgba(144, 133, 233, 0.16);
+  --fin: #1BAF7A; --fin-deep: #1BAF7A; --fin-lip: #0E6E4C; --fin-soft: rgba(27, 175, 122, 0.16);
+  --ml: #E87BA4; --ml-deep: #E87BA4; --ml-lip: #A84C70; --ml-soft: rgba(232, 123, 164, 0.16);
+  --speed: #EDA100; --speed-deep: #EDA100; --speed-lip: #9A6900; --speed-soft: rgba(237, 161, 0, 0.16);
+  --track-label: #000000;
+  --node-face: #2B2B2B; --node-side: #1F1F1F;
+  --s1: #3987E5; --s2: #D95926; --s3: #199E70; --s4: #C98500; --s5: #D55181; --s6: #9085E9;
+  --seq-1: #0D366B; --seq-2: #144686; --seq-3: #1C5CAB; --seq-4: #2A78D6; --seq-5: #5F9CE6; --seq-6: #9CC3F3;
+  --div-mid: #383835;
+  --e1: 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --e2: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 8px 24px rgba(0, 0, 0, 0.5);
+  --e3: 0 -8px 32px rgba(0, 0, 0, 0.6);
+}
+
+/* Track scoping: any element with data-track sets --t-* for its subtree */
+[data-track="maths"] { --t: var(--maths); --t-deep: var(--maths-deep); --t-lip: var(--maths-lip); --t-soft: var(--maths-soft); }
+[data-track="prob"]  { --t: var(--prob);  --t-deep: var(--prob-deep);  --t-lip: var(--prob-lip);  --t-soft: var(--prob-soft); }
+[data-track="code"]  { --t: var(--code);  --t-deep: var(--code-deep);  --t-lip: var(--code-lip);  --t-soft: var(--code-soft); }
+[data-track="fin"]   { --t: var(--fin);   --t-deep: var(--fin-deep);   --t-lip: var(--fin-lip);   --t-soft: var(--fin-soft); }
+[data-track="ml"]    { --t: var(--ml);    --t-deep: var(--ml-deep);    --t-lip: var(--ml-lip);    --t-soft: var(--ml-soft); }
+[data-track="speed"] { --t: var(--speed); --t-deep: var(--speed-deep); --t-lip: var(--speed-lip); --t-soft: var(--speed-soft); }

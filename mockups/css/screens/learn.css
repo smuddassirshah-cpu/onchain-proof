@@ -1,0 +1,243 @@
+/* Learn: the catalogue (spec 7.3, 8.2, 3, 2.5). Everything is scoped under .screen-learn and uses the zl- prefix.
+   Colours come from tokens only. Course cards: r-xl, 2px line, 16:10 art on the track soft wash, 4px track bar.
+   Topic cards are flat (bg-sunken, r-xl) and hold their course cards. */
+
+.screen-learn .zl { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; min-width: 0; }
+.screen-learn .zl h1, .screen-learn .zl h2, .screen-learn .zl h3, .screen-learn .zl p { margin: 0; }
+.screen-learn .zl-courses, .screen-learn .zl-paths-view { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; min-width: 0; }
+.screen-learn [hidden] { display: none !important; }
+
+/* ---------- Head: title, one line, Courses / Paths toggle ---------- */
+.screen-learn .zl-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "t v" "d v"; align-items: center; gap: 6px 24px; }
+.screen-learn .zl-h1 { grid-area: t; }
+.screen-learn .zl-desc { grid-area: d; }
+.screen-learn .zl-toggle { grid-area: v; display: inline-flex; gap: 4px; padding: 4px; border-radius: var(--r-pill); background: var(--bg-sunken); }
+.screen-learn .zl-toggle button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; padding: 0 18px; border: 0; border-radius: var(--r-pill);
+  background: transparent; color: var(--text-2); font: 600 15px/20px var(--font-sans);
+  transition: background-color var(--d-micro) var(--ease-standard), color var(--d-micro) var(--ease-standard); }
+.screen-learn .zl-toggle button:hover { color: var(--ink); }
+.screen-learn .zl-toggle button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-pill); }
+@media (max-width: 599px) {
+  .screen-learn .zl-head { grid-template-areas: "t v" "d d"; gap: 8px 12px; }
+  .screen-learn .zl-toggle button { padding: 0 14px; }
+}
+@media (max-width: 359px) { .screen-learn .zl-toggle .icon { display: none; } }
+
+/* ---------- Stage selector: segmented pill chips (spec 7.3, 2.10 r-pill) ---------- */
+.screen-learn .zl-stages { display: inline-grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); justify-self: start; gap: 4px; padding: 4px;
+  border-radius: var(--r-pill); background: var(--bg-sunken); }
+@media (max-width: 599px) { .screen-learn .zl-stages { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-flow: row; justify-self: stretch; } }
+.screen-learn .zl-stage { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 4px; min-width: 0; min-height: 44px; padding: 0 20px;
+  border: 0; border-radius: var(--r-pill); background: transparent; color: var(--text-2); font: 600 15px/20px var(--font-sans); white-space: nowrap;
+  transition: background-color var(--d-micro) var(--ease-standard), color var(--d-micro) var(--ease-standard); }
+@media (max-width: 599px) { .screen-learn .zl-stage { padding: 0 4px; font-size: 14px; } }
+.screen-learn .zl-stage:hover { color: var(--ink); background: var(--bg-hover); }
+.screen-learn .zl-stage[aria-pressed="true"] { background: var(--ink); color: var(--bg-canvas); }
+.screen-learn .zl-stage:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-pill); }
+.screen-learn .zl-stage-ok { display: inline-grid; place-items: center; width: 16px; height: 16px; margin-left: -2px; }
+.screen-learn .zl-stage-ok .icon { width: 14px; height: 14px; stroke-width: 3; }
+.screen-learn .zl-you { width: 7px; height: 7px; margin-left: 2px; border-radius: 50%; background: currentColor; flex: none; }
+
+/* ---------- Exit test card ---------- */
+.screen-learn .zl-exit { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px 16px; padding: 16px 20px; }
+.screen-learn .zl-exit-ico { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--bg-sunken); color: var(--ink); }
+.screen-learn .zl-exit.is-done .zl-exit-ico { background: var(--green-chip); }
+.screen-learn .zl-exit-t { display: grid; gap: 4px; min-width: 0; }
+.screen-learn .zl-exit-p { font: 400 16px/22px var(--font-sans); }
+.screen-learn .zl-exit-p b { font-weight: 700; }
+.screen-learn .zl-exit-act { display: flex; align-items: center; justify-content: flex-end; gap: 8px 20px; flex-wrap: wrap; }
+.screen-learn .zl-exit-act .btn { white-space: nowrap; margin-bottom: 4px; }
+.screen-learn .zl-link { min-height: 44px; }
+.screen-learn .zl-tolink { order: -1; }
+@media (max-width: 599px) {
+  /* Phones: no icon, text full width, then the 48px button full width (spec 2.11) */
+  .screen-learn .zl-exit { grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 14px 16px 16px; }
+  .screen-learn .zl-exit-ico { display: none; }
+  .screen-learn .zl-exit-p { font-size: 15px; line-height: 21px; }
+  .screen-learn .zl-months, .screen-learn .zl-months + .zl-dot { display: none; }
+  .screen-learn .zl-exit-act { display: grid; grid-template-columns: minmax(0, 1fr); justify-content: stretch; justify-items: center; gap: 4px; }
+  .screen-learn .zl-exit-act .btn { width: 100%; }
+  .screen-learn .zl-tolink { order: 2; }
+  .screen-learn .zl-exit.is-done .zl-exit-act { display: flex; justify-content: space-between; }
+}
+
+/* ---------- Track tabs: 3px accent underline, sticky under the header ---------- */
+.screen-learn .zl-tabs-wrap { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; margin: 0 -16px; padding: 0 16px; background: var(--bg-canvas); }
+@media (min-width: 768px) { .screen-learn .zl-tabs-wrap { top: calc(64px + env(safe-area-inset-top, 0px)); margin: 0; padding: 0; } }
+.screen-learn .zl-tabs { display: flex; gap: 24px; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; border-bottom: 1px solid var(--line); overscroll-behavior-x: contain; }
+.screen-learn .zl-tabs::-webkit-scrollbar { display: none; }
+/* Masks read alpha only, so the token's colour does not matter in either theme */
+.screen-learn .zl-tabs-wrap.fade-r .zl-tabs { -webkit-mask-image: linear-gradient(to right, var(--ink) calc(100% - 32px), transparent); mask-image: linear-gradient(to right, var(--ink) calc(100% - 32px), transparent); }
+.screen-learn .zl-tabs-wrap.fade-l .zl-tabs { -webkit-mask-image: linear-gradient(to right, transparent, var(--ink) 32px); mask-image: linear-gradient(to right, transparent, var(--ink) 32px); }
+.screen-learn .zl-tabs-wrap.fade-l.fade-r .zl-tabs { -webkit-mask-image: linear-gradient(to right, transparent, var(--ink) 32px, var(--ink) calc(100% - 32px), transparent); mask-image: linear-gradient(to right, transparent, var(--ink) 32px, var(--ink) calc(100% - 32px), transparent); }
+.screen-learn .zl-tab { position: relative; flex: none; display: inline-flex; align-items: center; gap: 8px; height: 52px; padding: 0 2px; border: 0; background: none;
+  color: var(--text-muted); font: 600 16px/20px var(--font-sans); white-space: nowrap; transition: color var(--d-micro) var(--ease-standard); }
+.screen-learn .zl-tab::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; border-radius: 3px 3px 0 0; background: transparent;
+  transition: background-color var(--d-micro) var(--ease-standard); }
+.screen-learn .zl-tab:hover { color: var(--ink); }
+.screen-learn .zl-tab[aria-selected="true"] { color: var(--ink); }
+.screen-learn .zl-tab[aria-selected="true"]::after { background: var(--t, var(--ink)); }
+.screen-learn .zl-tab:focus-visible { outline: 2px solid var(--focus); outline-offset: -4px; border-radius: 8px; }
+.screen-learn .zl-ct { display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px; border-radius: var(--r-pill); background: var(--bg-sunken); color: var(--text-2); font: 700 12px/1 var(--font-sans); }
+.screen-learn .zl-tab[aria-selected="true"] .zl-ct { background: var(--t-soft, var(--bg-sunken)); color: var(--t-deep, var(--ink)); }
+.screen-learn .zl-tab.is-empty .zl-ct { background: transparent; box-shadow: inset 0 0 0 1.5px var(--line); color: var(--text-muted); }
+
+/* Dark elevation (spec 2.7): sunken fills sit almost on the canvas, so they carry a hairline ring */
+.screen-learn .zl-toggle, .screen-learn .zl-stages, .screen-learn .zl-ct, .screen-learn .zl-topic, .screen-learn .zl-empty { box-shadow: inset 0 0 0 1px var(--hairline); }
+.screen-learn .zl-toggle button[aria-pressed="true"] { background: var(--bg-surface); color: var(--ink); box-shadow: var(--e1), 0 0 0 1px var(--line); }
+
+/* ---------- Topic cards: flat, holding their course cards ---------- */
+.screen-learn .zl-topics { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; padding-top: 8px; min-width: 0; }
+.screen-learn .zl-topic { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; min-width: 0; padding: 20px; border-radius: var(--r-xl); background: var(--bg-sunken); }
+.screen-learn .zl-topic-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px 16px; flex-wrap: wrap; }
+.screen-learn .zl-topic-t { display: grid; gap: 4px; min-width: 0; flex: 1 1 320px; }
+.screen-learn .zl-ov { color: var(--t-deep); }
+.screen-learn .zl-topic-h { font: 700 20px/26px var(--font-sans); letter-spacing: -0.01em; text-wrap: balance; }
+.screen-learn .zl-topic-h:focus { outline: none; }
+.screen-learn .zl-topic-h:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; border-radius: 4px; }
+.screen-learn .zl-num { color: var(--t-deep); }
+.screen-learn .zl-hrs { color: var(--text-muted); font-weight: 600; white-space: nowrap; }
+.screen-learn .zl-meta { font: 500 14px/20px var(--font-sans); color: var(--text-2); }
+.screen-learn .zl-note { color: var(--text-2); }
+.screen-learn .zl-note::before { content: "·"; margin: 0 6px; color: var(--text-muted); }
+@media (max-width: 599px) { .screen-learn .zl-note { display: block; } .screen-learn .zl-note::before { content: none; } }
+.screen-learn .zl-topic-chips { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+@media (min-width: 768px) { .screen-learn .zl-topic-chips { justify-content: flex-end; } }
+
+/* Status chips (course and topic): label plus icon, never colour alone. Type matches the shared .chip (600 14/18). */
+.screen-learn .zl-chip { display: inline-flex; align-items: center; gap: 5px; height: 28px; padding: 0 10px 0 8px; border-radius: var(--r-pill);
+  font: 600 14px/18px var(--font-sans); white-space: nowrap; flex: none; }
+.screen-learn .zl-chip.lg { height: 32px; padding: 0 12px 0 10px; }
+.screen-learn .zl-chip .icon { width: 14px; height: 14px; stroke-width: 2.5; }
+.screen-learn .zl-chip.is-none { background: var(--bg-sunken); color: var(--text-2); box-shadow: inset 0 0 0 1px var(--hairline); }
+.screen-learn .zl-chip.is-prog { background: var(--t-soft); color: var(--t-deep); }
+.screen-learn .zl-chip.is-done { background: var(--bg-sunken); color: var(--ink); box-shadow: inset 0 0 0 1px var(--hairline); }
+.screen-learn .zl-chip.is-ready { background: var(--bg-surface); color: var(--ink); box-shadow: inset 0 0 0 2px var(--line-strong); }
+.screen-learn .zl-chip.is-pass, .screen-learn .zl-chip.is-out { background: var(--green-chip); color: var(--ink); }
+.screen-learn .zl-chip.is-opt { background: var(--bg-sunken); color: var(--ink); padding: 0 10px; }
+/* Topic-level chips sit on the sunken topic card, so the sunken ones lift to the surface */
+.screen-learn .zl-topic-chips .zl-chip.is-none, .screen-learn .zl-topic-chips .zl-chip.is-done { background: var(--bg-surface); box-shadow: inset 0 0 0 1px var(--line); }
+.screen-learn .zl-ring { width: 14px; height: 14px; flex: none; }
+.screen-learn .zl-ring circle { fill: none; stroke: currentColor; stroke-width: 2; }
+.screen-learn .zl-ring path { fill: currentColor; }
+.screen-learn .zl-ring.is-empty circle { stroke-dasharray: 2.4 2.4; }
+
+/* Topic exam chip: 36px face, 44px hit area */
+.screen-learn .zl-exam-chip { position: relative; display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px 0 12px; border: 2px solid var(--line);
+  border-radius: var(--r-pill); background: var(--bg-surface); color: var(--ink); font: 600 14px/18px var(--font-sans); white-space: nowrap;
+  transition: background-color var(--d-hover) var(--ease-standard), border-color var(--d-hover) var(--ease-standard); }
+.screen-learn .zl-exam-chip::after { content: ""; position: absolute; inset: -6px -2px; }
+.screen-learn .zl-exam-chip:hover { background: var(--bg-hover); border-color: var(--line-strong); }
+.screen-learn .zl-exam-chip:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-pill); }
+.screen-learn .zl-exam-chip .icon { width: 16px; height: 16px; }
+.screen-learn .zl-sub { color: var(--text-2); font-weight: 500; font-variant-numeric: tabular-nums; }
+.screen-learn .zl-sub::before { content: "·"; margin-right: 6px; color: var(--text-muted); }
+.screen-learn .zl-close { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; border-radius: var(--r-pill); background: var(--bg-surface);
+  box-shadow: inset 0 0 0 1px var(--line); color: var(--text-2); font: 600 14px/18px var(--font-sans); white-space: nowrap; }
+
+/* ---------- Course grid and cards ---------- */
+.screen-learn .zl-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(216px, 1fr)); align-items: stretch; }
+.screen-learn .zl-card { position: relative; display: flex; flex-direction: column; min-width: 0; padding: 0; text-align: left; overflow: hidden;
+  border: 2px solid var(--line); border-radius: var(--r-xl); background: var(--bg-surface); color: var(--ink);
+  transition: border-color var(--d-hover) var(--ease-standard), background-color var(--d-hover) var(--ease-standard); }
+.screen-learn .zl-card:hover { border-color: var(--line-strong); }
+.screen-learn .zl-card:active { background: var(--bg-hover); }
+.screen-learn .zl-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-xl); }
+.screen-learn .zl-art { position: relative; display: block; flex: none; aspect-ratio: 16 / 10; padding: 20px 28px 16px; background: var(--t-soft); }
+/* Some art reaches just past its 160 x 100 box (dice, layers); let it use the padding instead of clipping */
+.screen-learn .zl-art .art, .screen-learn .zl-step-art .art { display: block; width: 100%; height: 100%; overflow: visible; }
+.screen-learn .zl-cur { position: absolute; top: 10px; left: 10px; display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: var(--r-pill);
+  background: var(--t-deep); color: var(--track-label); font: 700 11px/1 var(--font-sans); letter-spacing: 0.06em; text-transform: uppercase; }
+.screen-learn .zl-body { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; padding: 14px 16px 16px; }
+.screen-learn .zl-title { font: 700 17px/22px var(--font-sans); letter-spacing: -0.01em; overflow-wrap: anywhere;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.screen-learn .zl-label { font: 600 15px/20px var(--font-sans); color: var(--text-2); }
+.screen-learn .zl-foot { display: grid; gap: 12px; justify-items: start; margin-top: auto; padding-top: 12px; }
+.screen-learn .zl-foot .bar { width: 100%; }
+
+/* Phones: one column of row cards, art left at 16:10 */
+@media (max-width: 599px) {
+  .screen-learn .zl-topics { gap: 12px; }
+  .screen-learn .zl-topic { padding: 16px 12px 12px; gap: 14px; }
+  .screen-learn .zl-topic-head { padding: 0 4px; }
+  .screen-learn .zl-grid { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .screen-learn .zl-card { flex-direction: row; align-items: stretch; gap: 12px; min-height: 112px; padding: 10px; }
+  .screen-learn .zl-art { width: 112px; align-self: center; padding: 8px 10px; border-radius: var(--r-sm); }
+  .screen-learn .zl-cur { position: static; align-self: flex-start; height: 18px; margin-bottom: 2px; padding: 0 6px; font-size: 10px; }
+  .screen-learn .zl-body { padding: 2px 0 0; gap: 2px; }
+  .screen-learn .zl-title { font-size: 16px; line-height: 21px; }
+  .screen-learn .zl-foot { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px; padding-top: 8px; }
+}
+
+/* ---------- Empty state for a track with nothing in this stage ---------- */
+.screen-learn .zl-empty { display: grid; justify-items: center; gap: 8px; padding: 40px 20px; border-radius: var(--r-xl); background: var(--bg-sunken); text-align: center; }
+.screen-learn .zl-empty-ico { display: grid; place-items: center; width: 52px; height: 52px; margin-bottom: 4px; border-radius: 50%; background: var(--t-soft); color: var(--t-deep); }
+.screen-learn .zl-empty .btn { margin: 8px 0 4px; white-space: nowrap; }
+
+/* ---------- Paths view ---------- */
+.screen-learn .zl-paths-intro { display: grid; gap: 6px; max-width: 640px; }
+.screen-learn .zl-unit { text-transform: none; letter-spacing: 0.02em; }
+.screen-learn .zl-paths-h { font: 700 22px/28px var(--font-sans); letter-spacing: -0.01em; }
+@media (min-width: 768px) { .screen-learn .zl-paths-h { font-size: 24px; line-height: 30px; } }
+.screen-learn .zl-paths { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); align-items: stretch; }
+@media (min-width: 1180px) { .screen-learn .zl-paths { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 768px) and (max-width: 1179px) {
+  .screen-learn .zl-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .screen-learn .zl-path { padding: 20px 24px 24px; }
+}
+.screen-learn .zl-path { display: grid; grid-template-rows: auto auto 1fr; gap: 16px; align-content: start; min-width: 0; padding: 20px;
+  border: 2px solid var(--line); border-radius: var(--r-xl); background: var(--bg-surface); }
+.screen-learn .zl-path.is-mine { border-color: var(--ink); }
+.screen-learn .zl-path-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 32px; }
+.screen-learn .zl-path-h { font: 700 22px/28px var(--font-sans); letter-spacing: -0.01em; }
+.screen-learn .zl-mine { display: inline-flex; align-items: center; height: 28px; padding: 0 12px; border-radius: var(--r-pill); background: var(--ink); color: var(--bg-canvas);
+  font: 700 13px/1 var(--font-sans); white-space: nowrap; }
+.screen-learn .zl-tests { display: grid; gap: 4px; }
+@media (min-width: 1180px) { .screen-learn .zl-tests { min-height: 76px; align-content: start; } }
+.screen-learn .zl-stack { display: grid; gap: 8px; align-content: start; }
+.screen-learn .zl-steps { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.screen-learn .zl-step { display: grid; grid-template-columns: 28px 64px minmax(0, 1fr); align-items: center; gap: 12px; width: 100%; min-height: 64px; padding: 8px 12px 8px 10px;
+  border: 2px solid var(--line); border-radius: var(--r-md); background: var(--bg-surface); color: var(--ink); text-align: left;
+  transition: border-color var(--d-hover) var(--ease-standard), background-color var(--d-hover) var(--ease-standard); }
+.screen-learn .zl-step:hover { border-color: var(--line-strong); }
+.screen-learn .zl-step:active { background: var(--bg-hover); }
+.screen-learn .zl-step:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-md); }
+.screen-learn .zl-step-n { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--bg-sunken); color: var(--ink); font: 700 14px/1 var(--font-sans); }
+.screen-learn .zl-path.is-mine .zl-step-n { background: var(--ink); color: var(--bg-canvas); }
+.screen-learn .zl-step-art { display: block; width: 64px; aspect-ratio: 16 / 10; padding: 4px 5px; border-radius: 8px; background: var(--t-soft); }
+.screen-learn .zl-step-t { display: grid; gap: 1px; min-width: 0; }
+.screen-learn .zl-step-name { font: 700 15px/20px var(--font-sans); overflow-wrap: anywhere; }
+.screen-learn .zl-step-meta { font: 500 13px/18px var(--font-sans); color: var(--text-2); }
+
+/* Optional 3.2 */
+.screen-learn .zl-opt { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 360px); align-items: center; gap: 16px 32px; padding: 20px 24px; }
+.screen-learn .zl-opt-t { display: grid; gap: 6px; min-width: 0; }
+.screen-learn .zl-opt-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.screen-learn .zl-ito { display: grid; gap: 2px; margin-top: 6px; padding: 10px 14px; border-radius: var(--r-md); background: var(--bg-sunken); overflow-x: auto; max-width: 100%; }
+.screen-learn .zl-ito .katex-display { margin: 4px 0; }
+.screen-learn .zl-opt-course { grid-template-columns: 64px minmax(0, 1fr) auto; }
+.screen-learn .zl-opt-course > .icon { color: var(--icon); }
+@media (max-width: 1023px) { .screen-learn .zl-opt { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 767px) { .screen-learn .zl-opt { padding: 16px; } }
+/* Keep Itô's lemma inside its box on narrow phones instead of scrolling it */
+@media (max-width: 479px) {
+  .screen-learn .zl-ito { padding: 10px 12px; }
+  .screen-learn .zl-ito .katex-display { font-size: 0.92em; }
+}
+@media (max-width: 379px) { .screen-learn .zl-ito .katex-display { font-size: 0.84em; } }
+@media (max-width: 339px) { .screen-learn .zl-opt { padding: 16px 12px; } .screen-learn .zl-ito { padding: 10px 8px; } .screen-learn .zl-ito .katex-display { font-size: 0.74em; } }
+.screen-learn .zl-paths-foot { max-width: 720px; }
+
+/* ---------- Motion: stage change rises in (80ms stagger); track tabs cross-fade over 150ms with no slide (spec 4.8) ---------- */
+.screen-learn .zl-topics.zl-xfade { animation: fade var(--d-micro) var(--ease-standard) both; }
+@media (prefers-reduced-motion: reduce) {
+  .screen-learn .enter, .screen-learn .zl-topics.zl-xfade { animation: none; }
+  .screen-learn .bar > i { transition: none; }
+}
+:root[data-motion="reduced"] .screen-learn .enter, :root[data-motion="reduced"] .screen-learn .zl-topics.zl-xfade { animation: none; }
+:root[data-motion="reduced"] .screen-learn .bar > i { transition: none; }
+
+/* Toasts mount on body, after #app. While this screen is open: one line where it fits, and a neutral fill,
+   because pear is reserved for the streak (spec 1, 7.3). Shared request: a neutral .toast variant and the width rule in components.css. */
+#app.screen-learn ~ .toast { width: max-content; max-width: calc(100vw - 32px); text-align: center; justify-content: center;
+  background: var(--bg-raised); color: var(--ink); box-shadow: var(--e2), 0 0 0 1px var(--line); }

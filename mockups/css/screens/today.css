@@ -1,0 +1,351 @@
+/* Today (spec 7.2) and the mental arithmetic warm-up.
+   Everything is scoped under .screen-today or .screen-warmup. Content that Z.sheet mounts outside #app
+   carries the zt- or zw- prefix (formula sheet, quit sheet). Colours come from tokens only. */
+
+/* =========================================================================
+   TODAY: layout
+   ========================================================================= */
+.screen-today .zt { display: grid; gap: 16px; min-width: 0; }
+.screen-today .zt-col { display: grid; gap: 16px; align-content: start; min-width: 0; }
+.screen-today .zt-col:empty { display: none; }
+.screen-today .zt h1, .screen-today .zt h2, .screen-today .zt h3, .screen-today .zt p { margin: 0; }
+.zt-deep { color: var(--t-deep); }
+@media (min-width: 768px) and (max-width: 1023px) {
+  .screen-today .zt { max-width: 620px; margin: 0 auto; }
+  .screen-today .zt-col { gap: 20px; }
+}
+@media (min-width: 1024px) {
+  .screen-today .zt { grid-template-columns: 480px minmax(0, 1fr); gap: 48px; align-items: start; }
+  .screen-today .zt-col { gap: 20px; }
+}
+
+/* Mobile top row: date left, streak pill right */
+.screen-today .zt-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; }
+.screen-today .zt-date { font: 600 15px/20px var(--font-sans); color: var(--text-2); }
+.screen-today .zt-top .streak-pill { position: relative; }
+.screen-today .zt-top .streak-pill::after { content: ""; position: absolute; inset: -4px; }
+.screen-today .zt-top .streak-pill:hover { background: var(--bg-hover); }
+
+.screen-today .zt-hello { display: grid; gap: 4px; padding-top: 4px; }
+
+/* =========================================================================
+   Search pill and results
+   ========================================================================= */
+.screen-today .zt-search { position: relative; z-index: 5; }
+.screen-today .zt-pill { display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 18px; border: 2px solid var(--line); border-radius: var(--r-pill);
+  background: var(--bg-surface); color: var(--icon); transition: border-color var(--d-hover) var(--ease-standard); }
+.screen-today .zt-pill:hover { border-color: var(--line-strong); }
+.screen-today .zt-pill:focus-within { border-color: var(--manip); box-shadow: 0 0 0 3px var(--manip-wash); outline: none; } /* as .field */
+.screen-today .zt-pill input { flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; background: transparent; color: var(--ink); font: 400 16px/24px var(--font-sans); }
+.screen-today .zt-pill input::placeholder { color: var(--text-muted); }
+.screen-today .zt-pill input::-webkit-search-cancel-button { -webkit-appearance: none; }
+.screen-today .zt-results { position: absolute; left: 0; right: 0; top: calc(100% + 8px); margin: 0; padding: 6px; list-style: none;
+  max-height: min(360px, 60vh); overflow: auto; background: var(--bg-raised); border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: var(--e2);
+  animation: rise var(--d-enter) var(--ease-enter) both; }
+.screen-today .zt-results.up { top: auto; bottom: calc(100% + 8px); }
+.screen-today .zt-results [role="option"] { display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 6px 10px; border-radius: var(--r-sm); cursor: pointer; }
+.screen-today .zt-results [role="option"][aria-selected="true"] { background: var(--bg-hover); box-shadow: inset 0 0 0 2px var(--focus); }
+.screen-today .zt-results .zt-ico { width: 36px; height: 36px; border-radius: var(--r-sm); }
+.screen-today .zt-opt-t { display: grid; gap: 2px; flex: 1; min-width: 0; }
+.screen-today .zt-opt-t > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.screen-today .zt-opt-tex { color: var(--text-2); font-size: 14px; }
+.screen-today .zt-kind { flex: none; }
+.screen-today .zt-none { padding: 12px; }
+
+/* Formula sheet (mounted outside #app) */
+.zt-fsheet { display: grid; gap: 12px; padding-top: 4px; }
+.zt-fsheet h2, .zt-fsheet p { margin: 0; }
+.zt-fsheet-tex { padding: 16px; border-radius: var(--r-md); background: var(--bg-sunken); overflow-x: auto; font-size: 18px; }
+.zt-fsheet-tex .katex-display { margin: 0; }
+.zt-fsheet .btn { margin-top: 8px; }
+
+/* =========================================================================
+   Shared card bits
+   ========================================================================= */
+.screen-today .zt-ico { flex: none; width: 40px; height: 40px; display: grid; place-items: center; border-radius: var(--r-sm); background: var(--bg-sunken); color: var(--ink); }
+
+/* =========================================================================
+   Streak card: count, bolt, rest days, week strip, weekly goal by block
+   ========================================================================= */
+.screen-today .zt-streak { display: grid; gap: 20px; padding: 20px; }
+.screen-today .zt-streak-top { display: flex; align-items: center; gap: 12px; width: calc(100% + 16px); margin: -8px; padding: 8px; border: 0; border-radius: var(--r-md);
+  background: none; color: inherit; text-align: left; transition: background-color var(--d-hover) var(--ease-standard); }
+.screen-today .zt-streak-top:hover { background: var(--bg-hover); }
+.screen-today .zt-streak-l { display: grid; gap: 2px; flex: 1; min-width: 0; }
+.screen-today .zt-rest { display: grid; justify-items: end; gap: 6px; flex: none; }
+.screen-today .zt-pills { display: inline-flex; gap: 6px; }
+.screen-today .zt-pills i { width: 11px; height: 24px; border-radius: 6px; border: 2px solid var(--bolt-unlit); }
+.screen-today .zt-pills i.on { background: var(--bolt-lit); border-color: var(--pear-600); }
+
+.screen-today .zt-goal { display: grid; gap: 12px; padding-top: 16px; border-top: 1px solid var(--line); }
+.screen-today .zt-goal-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.screen-today .zt-goal-head b { font-weight: 800; }
+.screen-today .zt-hbar { display: flex; gap: 2px; height: 12px; }
+.screen-today .zt-seg { position: relative; flex: var(--g) 1 0; min-width: 0; overflow: hidden; background: color-mix(in srgb, var(--c) 22%, var(--bg-surface)); }
+.screen-today .zt-seg:first-child { border-radius: var(--r-pill) 0 0 var(--r-pill); }
+.screen-today .zt-seg:last-child { border-radius: 0 var(--r-pill) var(--r-pill) 0; }
+.screen-today .zt-seg > i { position: absolute; inset: 0 auto 0 0; border-radius: 0 4px 4px 0; background: var(--c); transform-origin: left; }
+/* Fills grow only on the first visit or when a value has changed, from where they were (--from) */
+.screen-today .zt-hbar.grow .zt-seg > i { animation: zt-grow var(--d-progress) var(--ease-standard) both; }
+@keyframes zt-grow { from { transform: scaleX(var(--from, 0)); } }
+/* The 1 h block is 29px wide at 480px, too narrow for a direct label, so the key is an honest legend:
+   two columns that imply no position under the bar, each swatch beside its value */
+.screen-today .zt-keys { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 16px; margin: 0; padding: 0; list-style: none; }
+.screen-today .zt-keys li { display: grid; grid-template-columns: 10px minmax(0, 1fr); column-gap: 8px; row-gap: 0; align-items: center; align-content: start; }
+.screen-today .zt-keys li > span { grid-column: 2; min-width: 0; }
+.screen-today .zt-sw { grid-row: 1; width: 10px; height: 10px; border-radius: 3px; background: var(--c); }
+
+/* =========================================================================
+   League card
+   ========================================================================= */
+.screen-today .zt-league { display: grid; gap: 12px; padding: 16px 20px 12px; }
+.screen-today .zt-league-head { display: flex; align-items: center; gap: 12px; }
+.screen-today .zt-badge { flex: none; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50% 8px 50% 50%;
+  background: var(--bg-sunken); border: 2px solid var(--line); color: var(--ink); font-size: 20px; }
+.screen-today .zt-league-t { display: grid; gap: 2px; flex: 1; min-width: 0; }
+.screen-today .zt-expand { color: var(--ink); flex: none; }
+.screen-today .zt-board { display: grid; gap: 4px; margin: 0 -8px; padding: 0; list-style: none; }
+.screen-today .zt-board li:not(.zt-zone) { display: grid; grid-template-columns: 24px 32px minmax(0, 1fr) auto; align-items: center; gap: 12px; min-height: 52px; padding: 0 12px 0 8px; border-radius: var(--r-md); }
+.screen-today .zt-board li.me { background: var(--league-me); }
+.screen-today .zt-rk { font: 700 15px/20px var(--font-sans); text-align: center; color: var(--text-2); }
+.screen-today .zt-rk.up { color: var(--green-text); }
+.screen-today .zt-board li.me .zt-rk { color: var(--ink); }
+.screen-today .zt-board .avatar { width: 32px; height: 32px; font-size: 14px; }
+/* White on the maths lip step: 9.3:1 light, 6.6:1 dark (the shared avatar face is 3.0:1 in dark) */
+.screen-today .zt-board li.me .avatar { background: var(--maths-lip); }
+.screen-today .zt-nm { font: 600 15px/20px var(--font-sans); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.screen-today .zt-mp { font: 600 15px/20px var(--font-sans); color: var(--text-2); }
+.screen-today .zt-board li.me .zt-mp { color: var(--ink); }
+.screen-today .zt-zone { display: flex; align-items: center; gap: 8px; padding: 2px 4px 2px 8px; color: var(--green-text); font: 700 13px/16px var(--font-sans); letter-spacing: 0.08em; text-transform: uppercase; }
+.screen-today .zt-zone::before, .screen-today .zt-zone::after { content: ""; flex: 1; border-top: 1px dashed var(--green-text); opacity: 0.7; }
+.screen-today .zt-zone::before { flex: 0 0 12px; }
+
+/* =========================================================================
+   Due card
+   ========================================================================= */
+.screen-today .zt-due { display: grid; gap: 4px; padding: 16px 8px 8px; }
+.screen-today .zt-due h2 { padding: 0 12px 4px; }
+.screen-today .zt-due ul { margin: 0; padding: 0; list-style: none; }
+.screen-today .zt-due li + li { position: relative; }
+.screen-today .zt-due li + li::before { content: ""; position: absolute; top: 0; left: 66px; right: 12px; border-top: 1px solid var(--line); }
+.screen-today .zt-row { display: flex; align-items: center; gap: 14px; width: 100%; min-height: 64px; padding: 10px 12px; border: 0; border-radius: var(--r-md);
+  background: none; color: inherit; text-align: left; transition: background-color var(--d-hover) var(--ease-standard); }
+.screen-today .zt-row:hover { background: var(--bg-hover); }
+.screen-today .zt-row-t { display: grid; gap: 2px; flex: 1; min-width: 0; }
+.screen-today .zt-chev { color: var(--icon); }
+
+/* =========================================================================
+   Warm-up card with sparkline
+   ========================================================================= */
+.screen-today .zt-warm { display: grid; gap: 14px; padding: 20px; }
+.screen-today .zt-warm-head { display: grid; gap: 2px; }
+.screen-today .zt-warm-body { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.screen-today .zt-warm-score { display: grid; gap: 0; }
+.screen-today .zt-spark { position: relative; flex: none; }
+.screen-today .zt-spark svg { display: block; overflow: visible; border-radius: 6px; }
+.screen-today .zt-spark svg:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+.screen-today .zt-spark svg:focus:not(:focus-visible) { outline: none; }
+.screen-today .zt-sline { fill: none; stroke: var(--t); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.screen-today .zt-end { fill: var(--t); stroke: var(--bg-surface); stroke-width: 2; paint-order: stroke; }
+.screen-today .zt-hot { fill: var(--t); stroke: var(--bg-surface); stroke-width: 2; paint-order: stroke; }
+.screen-today .zt-cross { stroke: var(--line-strong); stroke-width: 1; }
+.zt-tip { position: absolute; z-index: 3; display: grid; gap: 0; padding: 6px 10px; border-radius: var(--r-sm); background: var(--bg-raised); border: 1px solid var(--line);
+  box-shadow: var(--e2); white-space: nowrap; pointer-events: none; }
+.zt-tip[hidden] { display: none; }
+.zt-tip b { font: 700 15px/20px var(--font-sans); font-variant-numeric: tabular-nums; color: var(--ink); }
+.zt-tip span { font: 500 13px/18px var(--font-sans); color: var(--text-muted); }
+
+/* =========================================================================
+   Jump back in: deck card with two cards behind it, level thumbnails
+   ========================================================================= */
+.screen-today .zt-jump { display: grid; gap: 16px; }
+.screen-today .zt-deck { position: relative; padding-bottom: 16px; }
+.screen-today .zt-deck::before, .screen-today .zt-deck::after { content: ""; position: absolute; bottom: 0; height: 64px; border-radius: var(--r-xl); border: 2px solid var(--line); }
+.screen-today .zt-deck::before { left: 32px; right: 32px; background: color-mix(in srgb, var(--t) 30%, var(--bg-surface)); }
+.screen-today .zt-deck::after { left: 16px; right: 16px; bottom: 8px; background: color-mix(in srgb, var(--t) 16%, var(--bg-surface)); }
+.screen-today .zt-deck-card { position: relative; z-index: 1; padding: 24px 24px 28px; border: 2px solid var(--line); border-radius: var(--r-xl);
+  background: linear-gradient(to bottom, transparent 30%, var(--t-soft)), var(--bg-surface); }
+.screen-today .zt-deck-in { display: grid; gap: 16px; }
+.screen-today .zt-fade { animation: zt-fade var(--d-base) var(--ease-standard) both; }
+@keyframes zt-fade { from { opacity: 0; } }
+.screen-today .zt-deck-head { display: grid; gap: 4px; justify-items: center; text-align: center; }
+.screen-today .zt-deck-head h3 { margin: 0 0 4px; }
+.screen-today .zt-deck-art { display: grid; place-items: center; height: 200px; padding: 8px 24px; }
+.screen-today .zt-deck-art .art, .screen-today .zt-slide-art .art, .screen-today .zt-thumb-art .art { width: 100%; height: 100%; }
+
+.screen-today .zt-lrow { display: flex; align-items: center; gap: 14px; padding: 12px 14px; border-radius: var(--r-md); background: var(--bg-surface); border: 2px solid var(--line); }
+.screen-today .zt-puck { flex: none; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%;
+  background: color-mix(in srgb, var(--t) 18%, var(--bg-surface)); border: 2px solid var(--t); color: var(--t-deep); font: 800 16px/1 var(--font-sans); font-variant-numeric: tabular-nums; }
+.screen-today .zt-lrow-t { display: grid; gap: 2px; min-width: 0; }
+.screen-today .zt-donetoday { display: inline-flex; align-items: center; justify-content: center; gap: 6px; color: var(--green-text); }
+
+.screen-today .zt-thumbs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.screen-today .zt-thumb { position: relative; display: grid; gap: 6px; justify-items: center; padding: 0; border: 0; background: none; color: var(--text-2); }
+.screen-today .zt-thumb-art { display: grid; place-items: center; width: 100%; aspect-ratio: 4 / 3; padding: 10px; border-radius: var(--r-md);
+  background: var(--t-soft); border: 2px solid var(--line); transition: border-color var(--d-base) var(--ease-standard); }
+.screen-today .zt-thumb:hover .zt-thumb-art { border-color: var(--line-strong); }
+.screen-today .zt-thumb[aria-pressed="true"] { color: var(--ink); font-weight: 700; }
+.screen-today .zt-thumb[aria-pressed="true"] .zt-thumb-art { border-color: var(--t); }
+.screen-today .zt-thumb:focus-visible { outline: none; }
+.screen-today .zt-thumb:focus-visible .zt-thumb-art { outline: 2px solid var(--focus); outline-offset: 2px; }
+.screen-today .zt-tick { position: absolute; top: -8px; right: -8px; width: 24px; height: 24px; display: none; place-items: center; border-radius: 50%;
+  background: var(--t-deep); color: var(--track-label); box-shadow: 0 0 0 2px var(--bg-canvas); }
+.screen-today .zt-tick .icon { width: 14px; height: 14px; stroke-width: 3; }
+.screen-today .zt-thumb[aria-pressed="true"] .zt-tick { display: grid; animation: pop 500ms var(--spring-bounce) both; }
+
+/* =========================================================================
+   Mobile course hero carousel and resume card
+   ========================================================================= */
+.screen-today .zt-hero { display: grid; gap: 8px; text-align: center; }
+.screen-today .zt-car { position: relative; display: grid; grid-auto-flow: column; grid-auto-columns: 100%; gap: 12px; margin: 4px -16px 0; padding: 0 10%;
+  overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; }
+.screen-today .zt-car::-webkit-scrollbar { display: none; }
+.screen-today .zt-slide { display: grid; gap: 4px; justify-items: center; align-content: start; scroll-snap-align: center; min-width: 0; }
+.screen-today .zt-slide-art { display: grid; place-items: center; width: 100%; height: 188px; margin-top: 8px; padding: 20px; border-radius: var(--r-xl); background: var(--t-soft); }
+.screen-today .zt-dots { display: flex; justify-content: center; }
+.screen-today .zt-dots button { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; background: none; border-radius: 50%; }
+.screen-today .zt-dots i { width: 8px; height: 8px; border-radius: var(--r-pill); background: var(--line-control); transition: width var(--d-base) var(--ease-standard), background-color var(--d-base); }
+.screen-today .zt-dots button[aria-pressed="true"] i { width: 20px; background: var(--t-deep); }
+.screen-today .zt-resume { display: grid; gap: 16px; padding: 16px; }
+.screen-today .zt-resume .zt-lrow { border: 0; padding: 0 0 0 2px; background: none; }
+
+/* =========================================================================
+   Exam card with readiness ring
+   ========================================================================= */
+.screen-today .zt-exam { display: grid; grid-template-columns: 64px minmax(0, 1fr); align-items: center; gap: 12px 16px; padding: 20px; }
+.screen-today .zt-ring { position: relative; width: 64px; height: 64px; }
+.screen-today .zt-ring svg { display: block; }
+.screen-today .zt-ring circle { fill: none; stroke-width: 6; }
+.screen-today .zt-ring-track { stroke: var(--line); }
+.screen-today .zt-ring-fill { stroke: var(--t); stroke-linecap: round; }
+.screen-today .zt-ring.grow .zt-ring-fill { animation: zt-ring var(--d-count) var(--ease-standard) both; }
+@keyframes zt-ring { from { stroke-dasharray: 0 200; } }
+.screen-today .zt-ring-n { position: absolute; inset: 0; display: grid; place-items: center; font: 800 15px/1 var(--font-sans); }
+.screen-today .zt-exam-t { display: grid; gap: 2px; min-width: 0; }
+.screen-today .zt-exam-t .t-overline { display: inline-flex; align-items: center; gap: 6px; }
+.screen-today .zt-sit { grid-column: 1 / -1; }
+@media (min-width: 480px) {
+  .screen-today .zt-exam { grid-template-columns: 64px minmax(0, 1fr) auto; }
+  .screen-today .zt-sit { grid-column: auto; }
+}
+
+
+/* Streak sheet (core.js streakSheet, mounted after #app). Local fix until core.js changes, see the report:
+   "day streak" sits beside the bolt instead of under the close button. */
+
+/* =========================================================================
+   WARM-UP DRILL (full screen). Frame, top bar and button group follow the lesson player (spec 2.11).
+   ========================================================================= */
+.screen-warmup .zw { position: fixed; inset: 0; display: flex; flex-direction: column; background: var(--bg-canvas); color: var(--ink); overflow: hidden; }
+.screen-warmup .zw [hidden] { display: none !important; }
+.screen-warmup .zw h1, .screen-warmup .zw h2, .screen-warmup .zw p { margin: 0; }
+
+/* Top bar: close, title, timer pill (as the exam's) */
+.screen-warmup .zw-top { position: relative; z-index: 2; flex: none; height: var(--topbar-h); display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; padding: 0 32px; }
+.screen-warmup .zw-x { justify-self: start; margin-left: -10px; color: var(--icon); }
+.screen-warmup .zw-ttl { min-width: 0; color: var(--text-2); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.screen-warmup .zw-timer { justify-self: end; display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; border: 1px solid var(--line); border-radius: var(--r-pill);
+  background: var(--bg-surface); font: 700 16px/20px var(--font-sans); font-variant-numeric: tabular-nums;
+  transition: background-color var(--d-base) var(--ease-standard), border-color var(--d-base) var(--ease-standard); }
+.screen-warmup .zw-timer .icon { color: var(--icon); }
+.screen-warmup .zw-timer [data-time] { min-width: 4ch; text-align: right; }
+.screen-warmup .zw-timer.is-low { background: var(--amber-chip); border-color: var(--amber-frame); animation: zw-warn 600ms var(--ease-standard) 1; }
+.screen-warmup .zw-timer.is-low .icon { color: var(--ink); }
+@keyframes zw-warn { 0%, 100% { transform: scale(1); } 40% { transform: scale(1.08); } }
+
+/* Frame: the viewport minus 32px left, right and bottom, radius 24, 2px border, capped at 1280px */
+.screen-warmup .zw-frame { position: relative; z-index: 1; flex: 1; min-height: 0; width: calc(100% - 64px); max-width: 1280px; margin: 0 auto 32px;
+  display: flex; flex-direction: column; background: var(--bg-surface); border: 2px solid var(--line); border-radius: var(--r-xl); overflow: hidden; }
+.screen-warmup .zw-scroll { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 40px 24px 24px; overscroll-behavior: contain; }
+.screen-warmup .zw-col { max-width: var(--col); margin: 0 auto; }
+
+/* Button group: 366px, bottom-centre, about 17px above the frame's bottom edge */
+.screen-warmup .zw-foot { position: relative; flex: none; display: grid; justify-items: center; gap: 10px; padding: 8px 24px 17px; }
+.screen-warmup .zw-actions { display: flex; gap: 8px; width: 366px; max-width: 100%; }
+.screen-warmup .zw-primary { flex: 1; min-width: 0; }
+.screen-warmup .zw-sec { flex: 0 0 112px; padding: 0 12px; }
+.screen-warmup .zw-demo { min-height: 44px; }
+@media (min-width: 1200px) {
+  /* In the free right gutter beside the button group, as the lesson's Show solution */
+  .screen-warmup .zw-demo { position: absolute; left: calc(50% + 183px + 20px); bottom: 17px; min-height: 48px; }
+}
+
+/* Ready */
+.screen-warmup .zw-ready { display: grid; gap: 20px; }
+.screen-warmup .zw-art { display: grid; place-items: center; height: 148px; padding: 16px; border-radius: var(--r-xl); background: var(--t-soft); }
+.screen-warmup .zw-art .art { width: 100%; height: 100%; }
+.screen-warmup .zw-copy { display: grid; gap: 8px; }
+.screen-warmup .zw-kinds { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.screen-warmup .zw-kinds li { display: grid; grid-template-columns: 104px minmax(0, 1fr); align-items: center; gap: 12px; min-height: 52px; padding: 8px 16px;
+  border: 2px solid var(--line); border-radius: var(--r-sm); background: var(--bg-surface); }
+.screen-warmup .zw-ex { font-size: 17px; white-space: nowrap; }
+
+/* Drill */
+.screen-warmup .zw-drill { display: grid; justify-items: center; gap: 24px; padding-top: 8vh; text-align: center; }
+.screen-warmup .zw-score { display: inline-flex; align-items: baseline; gap: 10px; }
+.screen-warmup .zw-score-n { display: inline-block; min-width: 2ch; font: 800 32px/36px var(--font-sans); font-variant-numeric: tabular-nums; }
+.screen-warmup .zw-score-n.bump { animation: zw-bump 300ms var(--spring-bounce) both; }
+@keyframes zw-bump { 0% { transform: scale(1); } 45% { transform: scale(1.18); } 100% { transform: scale(1); } }
+.screen-warmup .zw-prob { display: grid; place-items: center; min-height: 72px; font-size: 48px; line-height: 1.2; color: var(--ink); }
+.screen-warmup .zw-field { width: min(260px, 100%); height: 72px; justify-content: center;
+  transition: border-color var(--d-micro) var(--ease-standard), background-color var(--d-micro) var(--ease-standard); }
+.screen-warmup .zw-field input { width: 100%; text-align: center; font: 700 34px/40px var(--font-sans); font-variant-numeric: tabular-nums; caret-color: var(--manip); }
+
+/* End */
+.screen-warmup .zw-end { display: grid; justify-items: center; gap: 8px; text-align: center; }
+.screen-warmup .zw-end > .t-overline { margin-top: 16px; }
+.screen-warmup .zw-end .enter:nth-child(2) { animation-delay: 80ms; }
+.screen-warmup .zw-end .enter:nth-child(3) { animation-delay: 120ms; }
+.screen-warmup .zw-end .enter:nth-child(4) { animation-delay: 200ms; }
+.screen-warmup .zw-big { font: 800 64px/68px var(--font-sans); letter-spacing: -0.02em; }
+.screen-warmup .zw-delta { max-width: 44ch; }
+.screen-warmup .zw-best { margin-top: 4px; animation: pop 500ms var(--spring-bounce) 700ms both; }
+.screen-warmup .zw-chartcard { display: grid; gap: 12px; width: 100%; margin-top: 16px; padding: 20px; text-align: left; animation-delay: 280ms; }
+.screen-warmup .zw-chart { position: relative; min-width: 0; }
+.screen-warmup .zw-chart svg { display: block; overflow: visible; border-radius: var(--r-xs); }
+.screen-warmup .zw-chart svg:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+.screen-warmup .zw-chart svg:focus:not(:focus-visible) { outline: none; }
+.screen-warmup .zw-grid { stroke: var(--line); stroke-width: 1; }
+.screen-warmup .zw-target { stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 6 4; }
+.screen-warmup .zw-tick, .screen-warmup .zw-xlabel, .screen-warmup .zw-tlabel { font: 500 13px/18px var(--font-sans); fill: var(--text-muted); font-variant-numeric: tabular-nums; }
+.screen-warmup .zw-tlabel { fill: var(--text-2); font-weight: 600; }
+.screen-warmup .zw-xlabel.strong { fill: var(--ink); font-weight: 700; }
+.screen-warmup .zw-vlabel { font: 700 13px/18px var(--font-sans); fill: var(--ink); font-variant-numeric: tabular-nums; }
+/* A surface halo keeps both labels legible if a line or column ever runs behind them */
+.screen-warmup .zw-tlabel, .screen-warmup .zw-vlabel { paint-order: stroke; stroke: var(--bg-surface); stroke-width: 4px; stroke-linejoin: round; }
+.screen-warmup .zw-col { fill: color-mix(in srgb, var(--t) 34%, var(--bg-surface)); }
+.screen-warmup .zw-col.now { fill: var(--t); }
+.screen-warmup .zw-hot { fill: var(--bg-hover); }
+
+/* Quit sheet (mounted outside #app) */
+.zw-quit { display: grid; gap: 12px; padding-top: 4px; }
+.zw-quit h2, .zw-quit p { margin: 0; padding-right: 40px; }
+.zw-quit-btns { display: grid; grid-template-columns: auto 1fr; gap: 8px; margin-top: 12px; }
+.zw-quit-btns .btn.secondary { min-width: 104px; }
+
+/* Mobile: no frame, 20px margins, a 286px button right-aligned with a 16px margin */
+@media (max-width: 767px) {
+  .screen-warmup .zw-top { height: 56px; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px; padding: 0 12px 0 4px; }
+  .screen-warmup .zw-x { margin-left: 0; }
+  .screen-warmup .zw-timer { height: 34px; padding: 0 10px; font-size: 15px; }
+  .screen-warmup .zw-frame { width: 100%; margin: 0; border: 0; border-radius: 0; background: var(--bg-canvas); }
+  .screen-warmup .zw-scroll { padding: 4px 20px 24px; }
+  .screen-warmup .zw-foot { justify-items: stretch; padding: 12px 16px calc(16px + env(safe-area-inset-bottom, 0px)); }
+  .screen-warmup .zw-actions { width: 100%; justify-content: flex-end; }
+  .screen-warmup .zw-primary { flex: 0 1 286px; }
+  .screen-warmup .zw-sec { flex: 0 0 auto; margin-right: auto; padding: 0 18px; }
+  .screen-warmup .zw-demo { justify-self: center; }
+  .screen-warmup .zw-drill { gap: 20px; padding-top: 4vh; }
+  .screen-warmup .zw-prob { font-size: 40px; }
+  .screen-warmup .zw-chartcard { margin-top: 12px; }
+}
+
+/* Reduced motion: no growth, pops or bumps, and nothing waits on an entrance delay to appear */
+@media (prefers-reduced-motion: reduce) {
+  .screen-today .zt-hbar.grow .zt-seg > i, .screen-today .zt-ring.grow .zt-ring-fill, .screen-warmup .zw-score-n.bump, .screen-warmup .zw-timer.is-low { animation: none; }
+  .screen-warmup .zw-end .enter:nth-child(n), .screen-warmup .zw-best, .screen-warmup .zw-chartcard { animation-delay: 0ms; }
+}
+:root[data-motion="reduced"] .screen-today .zt-hbar.grow .zt-seg > i, :root[data-motion="reduced"] .screen-today .zt-ring.grow .zt-ring-fill,
+:root[data-motion="reduced"] .screen-warmup .zw-score-n.bump, :root[data-motion="reduced"] .screen-warmup .zw-timer.is-low { animation: none; }
+:root[data-motion="reduced"] .screen-warmup .zw-end .enter, :root[data-motion="reduced"] .screen-warmup .zw-best,
+:root[data-motion="reduced"] .screen-warmup .zw-chartcard { animation-delay: 0ms; }

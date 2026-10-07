@@ -1,0 +1,228 @@
+/* Onboarding (#onboarding). Spec: docs/design-research.md 7.6, 2.9 (display token), 2.10 (2px borders, r-sm rows),
+   4.8 (8px rise between steps, tangram loader), 4.9 (reduced motion).
+   Every selector is scoped under .screen-onboarding, except the sign-in sheet (rendered outside #app), which uses the ob-acct- prefix. */
+
+/* Seventh loader piece: a light maths tint that stays light in both themes */
+.screen-onboarding { --ob-tint: var(--seq-2); }
+:root[data-theme="dark"] .screen-onboarding { --ob-tint: var(--seq-6); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .screen-onboarding { --ob-tint: var(--seq-6); } }
+
+.screen-onboarding .ob { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; background: var(--bg-canvas); color: var(--ink); }
+.screen-onboarding .ob [hidden] { display: none !important; }
+.screen-onboarding .ob [tabindex="-1"]:focus { outline: none; }
+.screen-onboarding .ob p { text-wrap: pretty; }
+
+/* ---------- Slim top bar: back, thin progress bar, step count ---------- */
+.screen-onboarding .ob-top { position: sticky; top: 0; z-index: 5; flex: none; height: var(--topbar-h); display: grid; grid-template-columns: 1fr minmax(0, 592px) 1fr;
+  align-items: center; gap: 16px; padding: 0 32px; background: var(--bg-canvas); }
+.screen-onboarding .ob-back { justify-self: start; margin-left: -10px; }
+.screen-onboarding .ob-prog { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.screen-onboarding .ob-bar { flex: 1; min-width: 0; } /* shared 12px bar, as in the lesson player (spec 2.11, 4.6) */
+.screen-onboarding .ob-count { flex: none; min-width: 3.6em; text-align: right; font: 500 13px/18px var(--font-sans); letter-spacing: 0.01em; color: var(--text-muted); } /* caption */
+
+/* ---------- Content column and button row ---------- */
+.screen-onboarding .ob-main { flex: 1 0 auto; display: flex; flex-direction: column; width: 100%; }
+.screen-onboarding .ob-col { flex: 1 0 auto; display: flex; flex-direction: column; width: 100%; max-width: calc(var(--col) + 40px); margin: 0 auto; padding: 48px 20px 32px; }
+.screen-onboarding .ob-col.ob-out { opacity: 0; transition: opacity var(--d-exit) var(--ease-exit); }
+.screen-onboarding .ob-col.ob-in, .screen-onboarding .ob-pop { animation: rise var(--d-enter) var(--ease-enter) both; }
+
+.screen-onboarding .ob-foot { position: sticky; bottom: 0; z-index: 4; flex: none; display: grid; justify-items: center; gap: 12px;
+  padding: 12px 20px calc(24px + env(safe-area-inset-bottom, 0px)); background: var(--bg-canvas); }
+.screen-onboarding .ob-foot::before { content: ""; position: absolute; left: 0; right: 0; top: -20px; height: 20px; pointer-events: none;
+  background: linear-gradient(to bottom, transparent, var(--bg-canvas)); }
+.screen-onboarding .ob.no-actions .ob-foot { display: none; }
+.screen-onboarding .ob-actions { display: flex; gap: 8px; width: 366px; max-width: 100%; }
+.screen-onboarding .ob-actions > .btn { flex: 1; min-width: 0; }
+.screen-onboarding .ob-actions > .ob-sec { flex: 0 0 106px; padding: 0 12px; }
+.screen-onboarding .ob-stack { display: grid; gap: 12px; width: 100%; }
+.screen-onboarding .ob-note { margin: 0; max-width: 366px; text-align: center; color: var(--text-muted); }
+.screen-onboarding .ob-center { margin: 0; text-align: center; }
+
+/* ---------- 1 Welcome ---------- */
+.screen-onboarding .ob.is-welcome .ob-col { justify-content: center; }
+.screen-onboarding .ob-welcome { display: grid; justify-items: center; gap: 20px; text-align: center; padding: 4vh 0; }
+.screen-onboarding .ob-mark svg { display: block; width: 88px; height: 88px; }
+.screen-onboarding .ob-hero { margin: 12px 0 0; max-width: 11em; }
+.screen-onboarding .ob-sub { margin: 0; max-width: 31em; color: var(--text-2); }
+
+/* ---------- Framing questions (display token) and answer rows ---------- */
+.screen-onboarding .ob-q { margin: 0; }
+.screen-onboarding .ob-react { margin: 12px 0 24px; min-height: 48px; color: var(--text-2); }
+.screen-onboarding .ob-rows { gap: 8px; }
+.screen-onboarding .ob-row { justify-content: space-between; gap: 16px; min-height: 60px; padding: 10px 16px; text-align: left; }
+.screen-onboarding .ob-row-tx { display: grid; gap: 2px; min-width: 0; }
+/* Answer rows in body (spec 7.6) at medium weight so the name holds over its caption-token description */
+.screen-onboarding .ob-row-h { font: 500 16px/24px var(--font-sans); color: var(--ink); }
+.screen-onboarding .ob-row-d { font: 500 13px/18px var(--font-sans); letter-spacing: 0.01em; color: var(--text-2); }
+.screen-onboarding .ob-radio { flex: none; width: 22px; height: 22px; border: 2px solid var(--line-control); border-radius: 50%; background: var(--bg-surface);
+  transition: border-color var(--d-base) var(--ease-standard), background-color var(--d-base) var(--ease-standard), box-shadow var(--d-base) var(--ease-standard); }
+.screen-onboarding .opt[aria-pressed="true"]:hover:not(:disabled) { background: var(--manip-wash); }
+.screen-onboarding .opt[aria-pressed="true"] .ob-radio { border-color: var(--manip); background: var(--manip); box-shadow: inset 0 0 0 4px var(--bg-surface); }
+.screen-onboarding .ob-tag { display: inline-block; margin-left: 6px; padding: 3px 8px; border-radius: var(--r-pill); background: var(--bg-sunken); color: var(--text-2);
+  font: 700 13px/16px var(--font-sans); letter-spacing: 0.08em; text-transform: uppercase; vertical-align: 1px; white-space: nowrap; } /* overline */
+
+/* ---------- 3 Starting point ---------- */
+.screen-onboarding .ob-group { display: grid; gap: 12px; margin-top: 28px; }
+.screen-onboarding .ob-group h2 { margin: 0; }
+.screen-onboarding .ob-q + .ob-group { margin-top: 24px; }
+.screen-onboarding .ob-py { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.screen-onboarding .ob-pyb { flex-direction: column; gap: 0; min-height: 60px; padding: 8px; }
+.screen-onboarding .ob-pyr { margin: 0; min-height: 18px; }
+
+/* ---------- 4 Placement ---------- */
+.screen-onboarding .ob-statement { margin: auto 0; display: grid; justify-items: center; gap: 16px; padding: 4vh 0; text-align: center; }
+.screen-onboarding .ob-statement p { margin: 0; max-width: 32em; }
+.screen-onboarding .ob-stmt { margin: 0; text-align: center; }
+.screen-onboarding .ob-stmt-art { margin-bottom: 8px; }
+.screen-onboarding .ob-stmt-art .dots { gap: 10px; }
+.screen-onboarding .ob-stmt-art .dots i { width: 16px; height: 16px; }
+.screen-onboarding .ob-pdots i.ob-done { background: var(--text-muted); }
+.screen-onboarding .ob-prob { display: grid; gap: 20px; }
+.screen-onboarding .ob-prob-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.screen-onboarding .ob-prompt { margin: 0; }
+.screen-onboarding .ob-eq { padding: 14px 16px; border-radius: var(--r-md); background: var(--bg-sunken); overflow-x: auto; overflow-y: hidden; }
+.screen-onboarding .ob-eq .katex-display { margin: 0; }
+.screen-onboarding .ob-popts .opt { font-size: 18px; }
+.screen-onboarding .ob-popts .katex { white-space: nowrap; }
+.screen-onboarding .ob-num { max-width: 280px; }
+.screen-onboarding .ob-num-pre { flex: none; font-size: 18px; }
+.screen-onboarding .ob-num .unit { flex: none; }
+.screen-onboarding .ob-nomark { display: flex; align-items: center; gap: 6px; margin: 0; }
+.screen-onboarding .ob-nomark .icon { stroke-width: 2; }
+
+.screen-onboarding .ob-sum { display: grid; gap: 16px; }
+.screen-onboarding .ob-sum > .t-overline { margin: 0; text-align: center; }
+.screen-onboarding .ob-why { margin: 0 0 4px; text-align: center; }
+.screen-onboarding .ob-retry { min-height: 44px; }
+.screen-onboarding .ob-results { padding: 16px 16px 6px; border: 2px solid var(--line); border-radius: var(--r-xl); }
+.screen-onboarding .ob-results-h { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
+.screen-onboarding .ob-results ol { margin: 0; padding: 0; list-style: none; }
+.screen-onboarding .ob-results li { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); }
+.screen-onboarding .ob-results li:first-child { border-top: 0; }
+.screen-onboarding .ob-rn { font: 600 15px/20px var(--font-sans); color: var(--text-muted); }
+.screen-onboarding .ob-rt { display: grid; min-width: 0; }
+.screen-onboarding .ob-v { display: inline-flex; align-items: center; gap: 5px; font: 500 13px/18px var(--font-sans); letter-spacing: 0.01em; white-space: nowrap; } /* caption */
+.screen-onboarding .ob-v .icon { width: 14px; height: 14px; stroke-width: 3; }
+.screen-onboarding .ob-v-ok { color: var(--green-text); }
+.screen-onboarding .ob-v-no { color: var(--amber-text); }
+.screen-onboarding .ob-v-skip { color: var(--text-muted); }
+.screen-onboarding .ob-choice { gap: 8px; }
+
+/* ---------- 5 Week ---------- */
+.screen-onboarding .ob-hours { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 24px; }
+.screen-onboarding .ob-hr { flex-wrap: wrap; align-content: center; align-items: baseline; justify-content: center; gap: 3px; height: 56px; padding: 0 8px; font: 600 15px/20px var(--font-sans);
+  transition: background-color var(--d-base) var(--ease-standard), color var(--d-base) var(--ease-standard), border-color var(--d-base) var(--ease-standard); }
+.screen-onboarding .ob-hr b { font: 700 22px/1 var(--font-sans); } /* h1 size */
+.screen-onboarding .ob-hr:not([aria-pressed="true"]):hover, .screen-onboarding .ob-tc:not([aria-pressed="true"]):not(:disabled):hover { background: var(--bg-hover); }
+/* One selection language in the whole flow: the spec 2.4 selected option (2px manipulable blue and its wash) */
+.screen-onboarding .ob-hr[aria-pressed="true"], .screen-onboarding .ob-tc[aria-pressed="true"] { border-color: var(--manip); background: var(--manip-wash); color: var(--ink); }
+.screen-onboarding .ob-pace { display: grid; gap: 6px; align-content: start; min-height: 136px; margin-top: 16px; padding: 16px 20px; }
+.screen-onboarding .ob-pace p { margin: 0; }
+.screen-onboarding .ob-pace-empty { align-self: center; }
+.screen-onboarding .ob-pace-big { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; }
+.screen-onboarding .ob-pace-r { color: var(--ink); }
+.screen-onboarding .ob-remind-h { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: -6px 0; }
+.screen-onboarding .ob-remind > .t-caption { margin: 0; }
+.screen-onboarding .ob-times { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; transition: opacity var(--d-base) var(--ease-standard); }
+.screen-onboarding .ob-times.is-off { opacity: 0.45; }
+.screen-onboarding .ob-tchips { display: flex; flex-wrap: wrap; gap: 8px; }
+.screen-onboarding .ob-tc { height: 44px; padding: 0 14px; gap: 5px; font: 500 15px/20px var(--font-sans);
+  transition: background-color var(--d-base) var(--ease-standard), border-color var(--d-base) var(--ease-standard); }
+.screen-onboarding .ob-tc .tnum { font-weight: 600; }
+.screen-onboarding .ob-tc:disabled { cursor: default; }
+.screen-onboarding .ob-time { position: relative; width: auto; height: 44px; padding: 0 12px 0 14px; gap: 6px; }
+.screen-onboarding .ob-time select { -webkit-appearance: none; appearance: none; min-width: 0; height: 100%; padding: 0 28px 0 0; border: 0; outline: 0; background: transparent;
+  font: 600 15px/20px var(--font-sans); font-variant-numeric: tabular-nums; color: var(--ink); cursor: pointer; } /* label */
+.screen-onboarding .ob-time .icon { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: var(--icon); pointer-events: none; }
+.screen-onboarding .ob-time select:disabled { cursor: default; }
+
+.screen-onboarding .ob-switch { position: relative; display: inline-grid; place-items: center; width: 56px; height: 44px; margin-right: -4px; cursor: pointer; }
+.screen-onboarding .ob-switch input { position: absolute; inset: 0; z-index: 1; margin: 0; opacity: 0; cursor: pointer; }
+.screen-onboarding .ob-switch span { position: relative; width: 48px; height: 28px; border-radius: var(--r-pill); background: var(--line-control); transition: background-color var(--d-base) var(--ease-standard); }
+.screen-onboarding .ob-switch span::after { content: ""; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: var(--bg-surface);
+  box-shadow: var(--e1); transition: transform var(--d-base) var(--ease-standard); }
+.screen-onboarding .ob-switch input:checked + span { background: var(--ink); }
+.screen-onboarding .ob-switch input:checked + span::after { transform: translateX(20px); }
+.screen-onboarding .ob-switch input:focus-visible + span { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* ---------- 6 Loader: seven flat pieces, thin canvas-coloured seams ---------- */
+.screen-onboarding .ob-load { margin: auto 0; display: grid; justify-items: center; gap: 10px; padding: 4vh 0 10vh; text-align: center; }
+.screen-onboarding .ob-tangram { width: 200px; height: 200px; overflow: visible; }
+.screen-onboarding .ob-tangram polygon { stroke: var(--bg-canvas); stroke-width: 1.75; stroke-linejoin: round; }
+.screen-onboarding .ob-pips { opacity: 0; transition: opacity var(--d-base) var(--ease-standard); }
+.screen-onboarding .ob-pips circle { fill: var(--bg-canvas); }
+.screen-onboarding .ob-tangram.is-die .ob-pips { opacity: 1; }
+.screen-onboarding .ob-load-h { margin: 20px 0 0; }
+.screen-onboarding .ob-load-l { margin: 0; min-height: 24px; }
+
+/* ---------- 7 Your plan ---------- */
+.screen-onboarding .ob-plan { display: grid; gap: 16px; }
+.screen-onboarding .ob-plan > .ob-stmt { margin-bottom: 8px; }
+.screen-onboarding .ob-pcard { display: grid; gap: 16px; padding: 20px; }
+.screen-onboarding .ob-pcard-art { display: grid; place-items: center; height: 112px; border-radius: var(--r-md); background: var(--t-soft); }
+.screen-onboarding .ob-pcard-art .art { width: 144px; height: 90px; }
+.screen-onboarding .ob-dl { display: grid; margin: 0; }
+.screen-onboarding .ob-dl > div { display: grid; gap: 2px; padding: 10px 0; border-top: 1px solid var(--line); }
+.screen-onboarding .ob-dl > div:first-child { padding-top: 0; border-top: 0; }
+.screen-onboarding .ob-dl dt { font: 500 13px/18px var(--font-sans); letter-spacing: 0.01em; color: var(--text-muted); } /* caption */
+.screen-onboarding .ob-dl dd { margin: 0; font: 600 15px/20px var(--font-sans); } /* label */
+/* the detail after the dot moves to the next line as a whole rather than splitting "24 / lessons" */
+.screen-onboarding .ob-dl dd .muted { display: inline-block; font-weight: 500; }
+.screen-onboarding .ob-pcard-n { margin: 0; padding-top: 12px; border-top: 1px solid var(--line); }
+.screen-onboarding .ob-finish { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; }
+.screen-onboarding .ob-stat { display: grid; gap: 4px; padding: 16px 18px; }
+.screen-onboarding .ob-split-h { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.screen-onboarding .ob-split { display: flex; gap: 2px; height: 12px; }
+.screen-onboarding .ob-split > span { min-width: 6px; background: var(--c); }
+.screen-onboarding .ob-split > span:first-child { border-radius: var(--r-pill) 0 0 var(--r-pill); }
+.screen-onboarding .ob-split > span:last-child { border-radius: 0 var(--r-pill) var(--r-pill) 0; }
+.screen-onboarding .ob-keys { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 24px; margin: 4px 0 0; padding: 0; list-style: none; }
+.screen-onboarding .ob-keys li { display: grid; gap: 2px; align-content: start; }
+.screen-onboarding .ob-keys li::before { content: ""; width: 16px; height: 4px; margin-bottom: 4px; border-radius: 2px; background: var(--c); }
+.screen-onboarding .ob-key-h { display: flex; justify-content: space-between; gap: 8px; }
+.screen-onboarding .ob-group > p.t-caption { margin: 0; }
+.screen-onboarding .ob-habits { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.screen-onboarding .ob-habits li { display: flex; align-items: flex-start; gap: 14px; padding: 14px 16px; border: 2px solid var(--line); border-radius: var(--r-md); }
+.screen-onboarding .ob-habits li > span:last-child { display: grid; gap: 2px; padding-top: 1px; }
+.screen-onboarding .ob-hi { flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: var(--t-soft); color: var(--t-deep); }
+.screen-onboarding .ob-habits li.is-later .ob-hi { background: var(--bg-sunken); color: var(--text-muted); }
+.screen-onboarding .ob-habits li.is-later .t-label { color: var(--text-2); }
+
+/* ---------- Sign-in sheet (outside #app, so prefixed rather than scoped) ---------- */
+.ob-acct { display: grid; gap: 12px; padding-top: 4px; }
+.ob-acct h2, .ob-acct p { margin: 0; padding-right: 40px; }
+.ob-acct-form { display: grid; gap: 8px; margin-top: 4px; }
+.ob-acct-form .btn { margin-top: 12px; }
+.ob-acct-act { display: grid; gap: 12px; margin-top: 8px; }
+.ob-acct-mail { overflow-wrap: anywhere; }
+
+/* ---------- Desktop ---------- */
+@media (min-width: 768px) {
+  .screen-onboarding .ob-react { min-height: 24px; }
+  .screen-onboarding .ob-pcard { grid-template-columns: 168px minmax(0, 1fr); align-items: start; }
+  .screen-onboarding .ob-pcard-art { height: 100%; min-height: 128px; }
+  .screen-onboarding .ob-pcard-n { grid-column: 1 / -1; }
+  .screen-onboarding .ob-mark svg { width: 96px; height: 96px; }
+}
+
+/* ---------- Mobile: 56px top bar, full-width buttons ---------- */
+@media (max-width: 767px) {
+  .screen-onboarding .ob-top { height: 56px; grid-template-columns: auto minmax(0, 1fr) 0; gap: 8px; padding: 0 16px 0 4px; }
+  .screen-onboarding .ob-back { margin-left: 0; }
+  .screen-onboarding .ob-col { padding: 16px 20px 24px; }
+  .screen-onboarding .ob-actions { width: 100%; }
+  .screen-onboarding .ob-actions > .ob-sec { flex-basis: 112px; }
+  .screen-onboarding .ob-foot { padding: 12px 16px calc(16px + env(safe-area-inset-bottom, 0px)); }
+  /* Reminder presets: three equal chips, name over time, then the select on its own row */
+  .screen-onboarding .ob-tchips { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; }
+  .screen-onboarding .ob-tc { height: 52px; flex-direction: column; gap: 0; justify-content: center; padding: 0 8px; }
+  .screen-onboarding .ob-tc-n { font: 500 13px/18px var(--font-sans); letter-spacing: 0.01em; }
+  .screen-onboarding .ob-time { flex: 1 1 100%; }
+  .screen-onboarding .ob-popts.ob-wide { grid-template-columns: 1fr; }
+}
+
+/* ---------- Reduced motion: opacity only ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .screen-onboarding .ob-col.ob-in, .screen-onboarding .ob-pop { animation-name: fade; }
+}
+:root[data-motion="reduced"] .screen-onboarding .ob-col.ob-in, :root[data-motion="reduced"] .screen-onboarding .ob-pop { animation-name: fade; }

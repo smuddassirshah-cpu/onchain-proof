@@ -1,0 +1,244 @@
+/* Course map (spec 7.4). Everything is scoped under .screen-course, or carries the zc- prefix
+   for content that Z.sheet and Z.toast mount outside #app. */
+
+/* Fixed white, glow and ink, and the review gold (#EDA100 in both themes). They resolve to the shared tokens
+   once tokens.css defines them (--on-accent, --glow, --ink-fixed, --node-review); until then, local fallbacks. */
+.screen-course, .zc-sheet, .zc-check, .screen-course ~ .toast {
+  --zc-white: var(--on-accent, #fff); --zc-glow: var(--glow, #fff); --zc-black: var(--ink-fixed, #000);
+  --zc-gold: var(--node-review, var(--s4)); --zc-gold-line: var(--speed); --zc-gold-lip: var(--speed-lip);
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .screen-course { --zc-gold: var(--node-review, var(--speed)); } }
+:root[data-theme="dark"] .screen-course { --zc-gold: var(--node-review, var(--speed)); }
+
+/* ---------- Layout ---------- */
+.screen-course .zc { display: grid; gap: 24px; min-width: 0; }
+.screen-course .zc-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+.zc-deep { color: var(--t-deep); }
+
+.screen-course .zc-topbar { display: flex; align-items: center; justify-content: space-between; margin: -12px -6px -8px; }
+.screen-course .zc-topbar .icon-btn { color: var(--ink); }
+
+/* Course card (left on desktop, stacked header on mobile) */
+.screen-course .zc-course { display: grid; gap: 20px; min-width: 0; border: 0; background: none; text-align: center; }
+.screen-course .zc-art { display: grid; place-items: center; height: 148px; padding: 12px; border-radius: var(--r-xl); background: var(--t-soft); }
+.screen-course .zc-art .art { width: 100%; height: 100%; }
+.screen-course .zc-course-body { display: grid; gap: 12px; justify-items: center; }
+.screen-course .zc-course-body .chip.track { height: 28px; font-size: 13px; }
+.screen-course .zc-course h1 { margin: 0; }
+.screen-course .zc-desc { margin: 0; max-width: 42ch; }
+.screen-course .zc-stats { display: inline-flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px 10px; margin: 0; color: var(--text-2); }
+.screen-course .zc-stats > span { display: inline-flex; align-items: center; gap: 6px; }
+.screen-course .zc-stats .icon { color: var(--t-deep); }
+.screen-course .zc-prog { display: grid; gap: 6px; width: 100%; max-width: 320px; justify-items: center; }
+.screen-course .zc-prog .bar { width: 100%; }
+.screen-course .zc-continue { margin-top: 8px; }
+
+@media (min-width: 768px) {
+  .screen-course .zc { justify-items: center; gap: 32px; }
+  .screen-course .zc-topbar { display: none; }
+  .screen-course .zc-course { width: 100%; max-width: 575px; padding: 20px; border: 2px solid var(--line); background: var(--bg-surface); }
+  .screen-course .zc-art { height: auto; aspect-ratio: 16 / 10; padding: 24px; border-radius: var(--r-lg); }
+  .screen-course .zc-course-body { padding: 0 4px 4px; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .screen-course .zc-art { aspect-ratio: auto; height: 200px; }
+}
+@media (min-width: 1024px) {
+  .screen-course .zc { grid-template-columns: minmax(0, 1fr) 575px; gap: 56px; align-items: start; justify-items: stretch; }
+  .screen-course .zc-course { position: sticky; top: 96px; max-width: 440px; justify-self: start; background: var(--bg-canvas); text-align: left; }
+  .screen-course .zc-course-body { justify-items: start; }
+  .screen-course .zc-course .zc-stats { justify-content: flex-start; }
+  .screen-course .zc-prog { justify-items: start; }
+}
+
+/* ---------- Path column ---------- */
+.screen-course .zc-col {
+  /* Halo: ring 7.76% and gap 6% of the puck width (9px and 7px at 116px), so it is 1.28x the puck at both sizes */
+  --halo: calc(var(--w) * 0.1376); --halo-ring: calc(var(--w) * 0.0776);
+  --w: 92px; --pitch: calc(var(--w) * 1.7); --padt: calc(var(--w) * 0.95); --padb: calc(var(--w) * 0.45);
+  position: relative; width: 100%; min-width: 0;
+}
+@media (min-width: 768px) { .screen-course .zc-col { --w: 116px; width: min(575px, 100%); } }
+
+/* Level card: page fill, accent border 2px sides, 3px top, 7px bottom lip in the lip step; sticky under the header */
+.screen-course .zc-lvwrap { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; padding-top: 8px; background: var(--bg-canvas); }
+.screen-course .zc-lvwrap::after { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 16px; background: linear-gradient(var(--bg-canvas), color-mix(in srgb, var(--bg-canvas) 0%, transparent)); pointer-events: none; }
+.screen-course .zc-lvcard {
+  display: grid; gap: 4px; justify-items: center; align-content: center; min-height: 90px; padding: 16px 20px; text-align: center;
+  background: var(--bg-canvas); border: 2px solid var(--t-lip); border-top-width: 3px; border-bottom-width: 7px; border-radius: var(--r-lg);
+}
+.screen-course .zc-lvcard h2 { margin: 0; }
+@media (min-width: 768px) { .screen-course .zc-lvwrap { top: 64px; padding-top: 12px; } }
+
+.screen-course .zc-path { position: relative; margin: 0; padding: 0; list-style: none;
+  height: calc(var(--padt) + (var(--n) - 1) * var(--pitch) + var(--w) * 0.596 + var(--padb)); }
+.screen-course .zc-path > li { display: contents; }
+
+/* ---------- Node ---------- */
+.screen-course .zc-node {
+  --nw: var(--w);
+  --done-face: color-mix(in srgb, var(--t) 55%, var(--zc-white));
+  --face: var(--node-face); --side: var(--node-side); --glyph: var(--text-muted);
+  --ring: color-mix(in srgb, var(--face) 90%, var(--ink));
+  position: absolute; z-index: 1;
+  left: calc(var(--x) * 100% - var(--nw) / 2);
+  top: calc(var(--padt) + var(--i) * var(--pitch));
+  max-width: calc((1 - var(--x)) * 100% + var(--nw) / 2);
+  display: flex; align-items: center; gap: 16px; min-height: 44px;
+  margin: 0; padding: 0; border: 0; background: none; color: inherit; text-align: left; font: inherit; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: left 500ms var(--spring-bounce), top 500ms var(--spring-bounce);
+}
+.screen-course .zc-node:focus-visible { outline: 2px solid var(--focus); outline-offset: 8px; border-radius: 18px; }
+/* Level review: gold, but only a done or current review takes the gold face and side; an upcoming one keeps the
+   neutral puck with a gold star */
+.screen-course .zc-node.k-review { --t: var(--zc-gold); --t-deep: var(--zc-gold-line); --t-lip: var(--zc-gold-lip); --glyph: var(--zc-gold); }
+.screen-course .zc-node.s-done { --face: var(--done-face); --side: var(--t); --glyph: var(--zc-white); --ring: color-mix(in srgb, var(--face) 55%, var(--zc-white)); }
+.screen-course .zc-node.s-current { --face: color-mix(in srgb, var(--t) 20%, var(--zc-glow)); --side: var(--t); --glyph: var(--t-lip); --ring: color-mix(in srgb, var(--t) 18%, transparent); }
+
+.screen-course .zc-pw { position: relative; flex: none; width: var(--nw); transition: width 500ms var(--spring-bounce); }
+.screen-course .zc-puck { position: relative; display: block; width: 100%; height: auto; overflow: visible; }
+.screen-course .zc-side { fill: var(--side); transition: fill 300ms var(--ease-standard); }
+.screen-course .zc-shade { fill: color-mix(in srgb, var(--side) 78%, var(--zc-black)); opacity: 0.35; transition: fill 300ms var(--ease-standard); }
+.screen-course .zc-top { transition: transform var(--d-press) var(--ease-standard); }
+.screen-course .zc-face { fill: var(--face); transition: fill 300ms var(--ease-standard); }
+.screen-course .zc-fill { fill: var(--done-face); transform-box: fill-box; transform-origin: center; transform: scale(0); transition: transform 300ms var(--ease-standard); }
+.screen-course .zc-node.s-done .zc-fill { transform: scale(1); }
+.screen-course .zc-node.k-review .zc-fill { display: none; }
+.screen-course .zc-glow { opacity: 0; transition: opacity 300ms var(--ease-standard); }
+.screen-course .zc-node.s-current .zc-glow { opacity: 1; }
+/* Faint segmented inner ring: a broad band in four arcs, the gaps centred on the axes */
+.screen-course .zc-ring { fill: none; stroke: var(--ring); stroke-width: 5; stroke-dasharray: 27 3; stroke-dashoffset: 28.5; transition: stroke 300ms; }
+
+/* Glyphs: white check on done lessons, star on reviews, clipboard on homework */
+.screen-course .zc-gpop { transform-box: fill-box; transform-origin: center; }
+.screen-course .zc-tick { opacity: 0; transform: scale(0.6); }
+.screen-course .zc-node.k-lesson.s-done .zc-tick { opacity: 1; transform: scale(1); }
+.screen-course .zc-node.zc-just .zc-tick { transition: transform 500ms var(--spring-bounce) 180ms, opacity 150ms 180ms; }
+.screen-course .zc-chk, .screen-course .zc-emb { fill: none; stroke-width: 5.5; stroke-linecap: round; stroke-linejoin: round; }
+.screen-course .zc-chk { stroke: var(--zc-white); }
+.screen-course .zc-emb { stroke: var(--t-lip); opacity: 0.45; transform: translateY(2.5px); }
+.screen-course .zc-star { fill: var(--glyph); stroke: var(--zc-gold-line); stroke-width: 1.3; stroke-linejoin: round; transition: fill 300ms; }
+.screen-course .zc-semb { fill: var(--t-lip); opacity: 0; }
+.screen-course .zc-node.s-done .zc-star, .screen-course .zc-node.s-current .zc-star { stroke: none; }
+.screen-course .zc-node.s-done .zc-semb { opacity: 0.45; }
+.screen-course .zc-clip { fill: none; stroke: var(--glyph); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; transition: stroke 300ms; }
+.screen-course .zc-mstar { display: none; }
+.screen-course .zc-node.is-m .zc-mstar { display: inline; }
+.screen-course .zc-mstar path { fill: var(--bolt-lit); stroke: color-mix(in srgb, var(--bolt-lit) 55%, var(--zc-black)); stroke-width: 1.6; stroke-linejoin: round; }
+
+/* Press: the face sinks into the side band, like a key */
+.screen-course .zc-node:active .zc-top, .screen-course .zc-node.is-sel .zc-top { transform: translateY(5px); }
+.screen-course .zc-node:hover .zc-face { filter: brightness(1.03); }
+
+/* Current node: the puck keeps its size; the halo ring sits outside it, 1.28x the puck width (measured) */
+.screen-course .zc-halo { position: absolute; inset: calc(var(--halo) * -1); border-radius: 50% / calc(var(--nw) * 0.2381 + var(--halo)); pointer-events: none;
+  opacity: 0; transform: scale(0.6); transition: opacity 200ms var(--ease-standard), transform 500ms var(--spring-bounce); }
+.screen-course .zc-halo > i { position: absolute; inset: 0; border-radius: inherit; border: var(--halo-ring) solid color-mix(in srgb, var(--t) 60%, transparent); }
+.screen-course .zc-node.s-current .zc-halo { opacity: 1; transform: scale(1); }
+.screen-course .zc-beam { position: absolute; left: 14%; right: 14%; top: -30px; bottom: 60%; pointer-events: none;
+  clip-path: polygon(40% 0, 60% 0, 100% 100%, 0 100%);
+  background: linear-gradient(color-mix(in srgb, var(--t) 42%, transparent), color-mix(in srgb, var(--t) 6%, transparent));
+  opacity: 0; transition: opacity 300ms var(--ease-standard); }
+.screen-course .zc-node.s-current .zc-beam { opacity: 1; }
+.screen-course .zc-mark { position: absolute; left: 50%; bottom: calc(100% + 26px); width: 30px; height: 30px; margin-left: -15px; pointer-events: none;
+  opacity: 0; transform: translateY(-10px); transition: opacity 250ms var(--ease-standard), transform 500ms var(--spring-bounce); }
+.screen-course .zc-mark > span { display: block; width: 100%; height: 100%; filter: drop-shadow(0 4px 6px color-mix(in srgb, var(--t) 35%, transparent)); }
+.screen-course .zc-mark svg { display: block; width: 100%; height: 100%; }
+.screen-course .zc-node.s-current .zc-mark { opacity: 1; transform: translateY(0); }
+.screen-course .zc-node.zc-arrive .zc-mark { transition-delay: 120ms; }
+@media (min-width: 768px) { .screen-course .zc-mark { width: 36px; height: 36px; margin-left: -18px; } }
+
+/* 2s breathing glow (3% scale) and a slow float; off under reduced motion */
+@keyframes zc-breathe { 0%, 100% { transform: scale(1); opacity: 0.85; } 50% { transform: scale(1.03); opacity: 1; } }
+@keyframes zc-glow { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
+@keyframes zc-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduced"]) .screen-course .zc-node.s-current .zc-halo > i { animation: zc-breathe 2s ease-in-out infinite; }
+  :root:not([data-motion="reduced"]) .screen-course .zc-node.s-current .zc-glow { animation: zc-glow 2s ease-in-out infinite; }
+  :root:not([data-motion="reduced"]) .screen-course .zc-node.s-current .zc-mark > span { animation: zc-float 2s ease-in-out infinite; }
+}
+
+/* Titles: node-label, to the right, at most 2 lines; current in ink, others muted */
+.screen-course .zc-title {
+  min-width: 0; font: 400 17px/22px var(--font-sans); color: var(--text-muted);
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere;
+  transition: color 200ms var(--ease-standard), margin 500ms var(--spring-bounce);
+}
+.screen-course .zc-node.s-current .zc-title { color: var(--ink); margin-left: var(--halo); }
+@media (min-width: 768px) { .screen-course .zc-title { font-size: 20px; line-height: 26px; } }
+
+/* ---------- End of path ---------- */
+.screen-course .zc-end { display: grid; gap: 16px; padding: 8px 0 24px; }
+.screen-course .zc-next { display: grid; grid-template-columns: 96px minmax(0, 1fr) auto; align-items: center; gap: 16px; width: 100%; padding: 12px 16px 12px 12px;
+  text-align: left; color: inherit; font: inherit; box-shadow: none; transition: background-color var(--d-hover) var(--ease-standard); }
+.screen-course .zc-next:hover { background: var(--bg-hover); }
+.screen-course .zc-next-art { display: grid; place-items: center; height: 72px; padding: 8px; border-radius: var(--r-md); background: var(--t-soft); }
+.screen-course .zc-next-art .art { width: 100%; height: 100%; }
+.screen-course .zc-next-text { display: grid; gap: 4px; min-width: 0; }
+.screen-course .zc-next-text .zc-stats { justify-content: flex-start; font-size: 14px; }
+.screen-course .zc-next-go { color: var(--icon); }
+.screen-course .zc-exam { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: start; padding: 16px; border-radius: var(--r-md); background: var(--bg-sunken); }
+.screen-course .zc-exam-ic { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: var(--bg-surface); color: var(--t-deep); }
+.screen-course .zc-exam p { margin: 0; color: var(--text-2); }
+.screen-course .zc-exam b { color: var(--ink); }
+.screen-course .zc-exam .link-btn { display: inline; min-height: 0; padding: 0; font-size: 16px; }
+@media (max-width: 479px) { .screen-course .zc-next { grid-template-columns: 72px minmax(0, 1fr) auto; gap: 12px; } .screen-course .zc-next-art { height: 56px; } }
+
+/* ---------- Desktop node card: anchored at the bottom of the path column over a radial glow ---------- */
+.screen-course .zc-pop { position: fixed; z-index: 40; bottom: 0; pointer-events: none; }
+.screen-course .zc-pop[hidden] { display: none; }
+.screen-course .zc-pop-glow { position: absolute; left: -30%; right: -30%; bottom: 0; height: 340px;
+  background: radial-gradient(50% 100% at 50% 100%, var(--t-soft) 0%, color-mix(in srgb, var(--t-soft) 60%, transparent) 45%, transparent 100%); }
+.screen-course .zc-pop-card { position: relative; margin: 0 0 24px; padding: 20px 20px 24px; pointer-events: auto;
+  background: var(--bg-surface); border: 2px solid var(--line); border-radius: var(--r-xl); box-shadow: var(--e2); }
+.screen-course .zc-pop-card.zc-in { animation: rise var(--d-enter) var(--ease-enter) both; }
+.screen-course .zc-pop-x { position: absolute; top: 10px; right: 10px; }
+.zc-info { display: grid; gap: 8px; }
+.zc-info .t-overline { margin-right: 44px; }
+.zc-info h2 { margin: 0; padding-right: 36px; }
+.zc-info .zc-meta { margin: 0 0 8px; }
+.zc-info .btn { margin-top: 8px; }
+.zc-info .btn.lg { min-height: 65px; }
+.zc-info .zc-cap { margin: 4px 0 0; text-align: center; }
+/* .btn.track comes after .btn:disabled in components.css, so restate the disabled face here */
+.zc-info .btn:disabled { --face: var(--disabled-face); --label: var(--disabled-label); box-shadow: none; transform: translateY(5px); }
+.zc-info .btn .icon { width: 22px; height: 22px; }
+.zc-info .zc-skip { justify-self: center; min-height: 44px; margin-top: 4px; }
+.zc-score { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; padding: 12px 14px; border-radius: var(--r-md); background: var(--bg-sunken); }
+.zc-score b { margin-left: 6px; }
+.zc-mchip { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px 0 8px; border-radius: var(--r-pill); background: var(--bg-surface); font: 600 14px/18px var(--font-sans); }
+.zc-pstar { width: 16px; height: 16px; }
+.zc-pstar path { fill: var(--bolt-lit); stroke: color-mix(in srgb, var(--bolt-lit) 55%, var(--zc-black)); stroke-width: 1.6; stroke-linejoin: round; }
+.zc-sheet { padding-top: 4px; }
+
+/* Scroll-to-current */
+.screen-course .zc-tocur { position: fixed; z-index: 41; right: 16px; bottom: calc(92px + env(safe-area-inset-bottom, 0px));
+  box-shadow: 0 4px 0 var(--lip), var(--e2); animation: rise var(--d-enter) var(--ease-enter) both; }
+.screen-course .zc-tocur:active { box-shadow: 0 0 0 var(--lip), var(--e2); }
+.screen-course .zc-tocur[hidden] { display: none; }
+@media (min-width: 768px) { .screen-course .zc-tocur { bottom: 24px; } }
+
+/* ---------- Level check (mounted in a sheet) ---------- */
+.zc-check { display: grid; gap: 20px; }
+.zc-check-head { display: flex; align-items: center; gap: 16px; min-height: 28px; padding-right: 40px; }
+.zc-check-head .dots { margin-left: auto; }
+.zc-check-q { display: grid; gap: 12px; }
+.zc-check-q p { margin: 0; }
+.zc-check-foot { display: grid; gap: 12px; }
+.zc-check-foot .btn { width: 100%; }
+.zc-verdict:empty { display: none; }
+.zc-verdict { display: grid; gap: 6px; justify-items: start; }
+.zc-verdict .chip svg { stroke-width: 3; }
+/* After a wrong answer the right option is revealed in hint indigo, never green (spec 4.5) */
+.zc-check .opt.reveal { border-color: var(--hint); background: var(--hint-wash); color: var(--ink); }
+.zc-result { display: grid; gap: 8px; justify-items: center; text-align: center; padding: 8px 0 4px; }
+.zc-result p { margin: 4px 0 12px; max-width: 40ch; }
+.zc-result .btn { width: 100%; }
+.zc-result .btn + .btn { margin-top: 4px; }
+
+/* ---------- Streak toast on return to the map: full width, ink bolt on pear ---------- */
+.screen-course ~ .toast { left: 16px; right: 16px; width: auto; max-width: 575px; margin: 0 auto; justify-content: center; transform: none; animation-name: zc-toast-in; }
+.screen-course ~ .toast .bolt path { fill: var(--zc-black); stroke: var(--zc-black); }
+@keyframes zc-toast-in { from { opacity: 0; transform: translateY(-16px); } }
+@media (min-width: 768px) { .screen-course ~ .toast { top: 80px; } }

@@ -257,3 +257,7 @@ button { cursor: pointer; }
   .proto-tab .icon { width: 14px; height: 14px; }
   .proto-panel { left: 24px; top: auto; bottom: 0; transform: none; width: min(260px, calc(100vw - 40px)); }
 }
+
+/* Native MathML (KaTeX output: 'mathml'): match the text size and keep display maths centred */
+math { font-size: 1.05em; }
+math[display="block"] { display: block math; margin: 0.5em 0; font-size: 1.15em; }

@@ -60,7 +60,8 @@
   /* ---------- Maths (KaTeX) ---------- */
   const tex = (src, display = false) => {
     if (!window.katex) return `<code>${esc(src)}</code>`;
-    return katex.renderToString(src, { displayMode: display, throwOnError: false, strict: 'ignore' });
+    // MathML output: the browser typesets it natively, so no third-party font or stylesheet is published
+    return katex.renderToString(src, { displayMode: display, output: 'mathml', throwOnError: false, strict: 'ignore' });
   };
   /* Renders every [data-tex] element (add data-display for block maths) and $...$ spans inside .md text */
   const mathify = (root = document) => { $$('[data-tex]', root).forEach(el => { el.innerHTML = tex(el.dataset.tex, el.hasAttribute('data-display')); el.removeAttribute('data-tex'); }); };
